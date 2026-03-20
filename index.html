@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de" data-theme="dark">
+<html lang="de">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,25 +28,25 @@
     /* === RESET === */
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-    /* === DESIGN TOKENS — DARK === */
-    :root, [data-theme="dark"] {
-      --color-primary: #2C1810;
-      --color-secondary: #8B4513;
-      --color-accent: #D4956A;
-      --color-warm: #E8A87C;
-      --color-highlight: #FF6B35;
-      --color-bg: #0D0906;
-      --color-bg-warm: #1A0F0A;
-      --color-surface: #1E1411;
-      --color-surface-light: #2A1D16;
-      --color-text-primary: #F5EDE8;
-      --color-text-muted: #A89080;
-      --color-text-warm: #D4B8A0;
-      --color-danger: #FF4444;
-      --color-success: #4CAF50;
-      --color-glass: rgba(30, 20, 17, 0.6);
-      --color-glass-border: rgba(212, 149, 106, 0.12);
-      --nav-bg: rgba(13, 9, 6, 0.85);
+    /* === DESIGN TOKENS — LIGHT ONLY === */
+    :root {
+      --color-primary: #1A0F0A;
+      --color-secondary: #5C3618;
+      --color-accent: #955A28;
+      --color-warm: #B06E35;
+      --color-highlight: #B93812;
+      --color-bg: #FAFAF8;
+      --color-bg-warm: #F3EDE8;
+      --color-surface: #FFFFFF;
+      --color-surface-light: #F0EBE6;
+      --color-text-primary: #1A1412;
+      --color-text-muted: #5F5045;
+      --color-text-warm: #3D2A1A;
+      --color-danger: #B82534;
+      --color-success: #1D6E38;
+      --color-glass: rgba(255, 255, 255, 0.72);
+      --color-glass-border: rgba(26, 15, 10, 0.10);
+      --nav-bg: rgba(250, 250, 248, 0.88);
 
       --font-display: 'Fraunces', serif;
       --font-body: 'Plus Jakarta Sans', sans-serif;
@@ -57,20 +57,6 @@
       --spacing-section: clamp(80px, 12vw, 160px);
       --max-width: 1100px;
       --transition: cubic-bezier(0.22, 1, 0.36, 1);
-    }
-
-    /* === LIGHT THEME === */
-    [data-theme="light"] {
-      --color-bg: #FBF7F4;
-      --color-bg-warm: #F5EDE8;
-      --color-surface: #FFFFFF;
-      --color-surface-light: #F0E8E2;
-      --color-text-primary: #1A0F0A;
-      --color-text-muted: #6B5B50;
-      --color-text-warm: #4A3728;
-      --color-glass: rgba(255, 255, 255, 0.6);
-      --color-glass-border: rgba(139, 69, 19, 0.12);
-      --nav-bg: rgba(251, 247, 244, 0.85);
     }
 
     /* === LOADING SCREEN === */
@@ -207,26 +193,6 @@
     .nav-links a:hover { color: var(--color-text-primary); }
     .nav-links a:hover::after { width: 100%; }
 
-    /* Theme Toggle */
-    .theme-toggle {
-      width: 40px; height: 40px;
-      border: 1px solid var(--color-glass-border);
-      border-radius: 50%;
-      background: var(--color-glass);
-      backdrop-filter: blur(10px);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      transition: all 0.3s var(--transition);
-      color: var(--color-text-primary);
-      flex-shrink: 0;
-    }
-    .theme-toggle:hover {
-      border-color: var(--color-highlight);
-      transform: scale(1.1) rotate(15deg);
-    }
 
     /* Hamburger */
     .hamburger {
@@ -309,7 +275,7 @@
       width: 400px;
       height: 400px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(255, 107, 53, 0.06) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(185, 56, 18, 0.04) 0%, transparent 70%);
       pointer-events: none;
       z-index: 0;
       transform: translate(-50%, -50%);
@@ -326,7 +292,7 @@
     }
     .hero-badge {
       display: inline-block;
-      background: rgba(255, 107, 53, 0.12);
+      background: rgba(185, 56, 18, 0.08);
       border: 1px solid rgba(255, 107, 53, 0.25);
       color: var(--color-highlight);
       font-size: 13px;
@@ -392,7 +358,7 @@
     }
     .hero-cta:hover {
       transform: translateY(-3px) scale(1.02);
-      box-shadow: 0 16px 48px rgba(255, 107, 53, 0.35);
+      box-shadow: 0 16px 48px rgba(185, 56, 18, 0.2);
       color: #fff;
     }
     .hero-cta:hover::before { opacity: 1; }
@@ -499,7 +465,7 @@
       will-change: transform;
     }
     .glass-card:hover {
-      border-color: rgba(212, 149, 106, 0.25);
+      border-color: rgba(26, 15, 10, 0.10);
       transform: translateY(-6px);
       box-shadow: 0 24px 64px rgba(0, 0, 0, 0.15);
     }
@@ -525,7 +491,7 @@
     }
     .update-card .icon {
       width: 52px; height: 52px;
-      background: rgba(255, 107, 53, 0.1);
+      background: rgba(185, 56, 18, 0.06);
       border-radius: 14px;
       display: flex;
       align-items: center;
@@ -548,7 +514,7 @@
     }
     .update-card .tag {
       display: inline-block;
-      background: rgba(255, 107, 53, 0.1);
+      background: rgba(185, 56, 18, 0.06);
       color: var(--color-highlight);
       font-size: 11px;
       font-weight: 700;
@@ -651,7 +617,7 @@
     .timeline-dot.active {
       background: var(--color-highlight);
       transform: translateX(-50%) scale(1);
-      box-shadow: 0 0 20px rgba(255, 107, 53, 0.4);
+      box-shadow: 0 0 20px rgba(185, 56, 18, 0.18);
     }
     .timeline-year {
       font-family: var(--font-display);
@@ -709,7 +675,7 @@
       border-bottom: 1px solid var(--color-glass-border);
       transition: background 0.3s;
     }
-    .job-row:hover { background: rgba(255, 107, 53, 0.03); }
+    .job-row:hover { background: rgba(185, 56, 18, 0.025); }
     .job-name { flex: 1; font-weight: 500; font-size: clamp(14px, 1.1vw, 16px); min-width: 0; }
     .job-bar-wrap {
       flex: 2;
@@ -783,7 +749,7 @@
       font-style: italic;
       transition: all 0.3s var(--transition);
     }
-    .callout:hover { border-color: rgba(212, 149, 106, 0.25); transform: translateX(4px); }
+    .callout:hover { border-color: rgba(26, 15, 10, 0.10); transform: translateX(4px); }
     .callout-icon { font-size: 24px; flex-shrink: 0; line-height: 1; margin-top: 2px; }
     .callout p { margin: 0; }
 
@@ -811,7 +777,7 @@
       color: var(--color-text-muted);
       transition: all 0.3s var(--transition);
     }
-    .impact-list li:hover { border-color: rgba(212,149,106,0.2); transform: translateX(4px); background: rgba(255,107,53,0.04); }
+    .impact-list li:hover { border-color: rgba(26, 15, 10, 0.08); transform: translateX(4px); background: rgba(185, 56, 18, 0.03); }
     .impact-list li strong { color: var(--color-text-primary); font-weight: 600; }
     .impact-list .li-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
 
@@ -833,7 +799,7 @@
       border-bottom: 1px solid var(--color-glass-border);
       transition: background 0.3s;
     }
-    .threat-row:hover { background: rgba(255, 107, 53, 0.03); }
+    .threat-row:hover { background: rgba(185, 56, 18, 0.025); }
     .threat-info { flex: 1.2; min-width: 0; }
     .threat-name { display: block; font-weight: 600; font-size: clamp(14px, 1.1vw, 16px); }
     .threat-detail { display: block; font-size: 12px; color: var(--color-text-muted); margin-top: 2px; }
@@ -966,7 +932,7 @@
       font-family: var(--font-display);
       font-size: 48px;
       font-weight: 800;
-      background: linear-gradient(135deg, rgba(255,107,53,0.15), rgba(212,149,106,0.08));
+      background: linear-gradient(135deg, rgba(185, 56, 18, 0.08), rgba(26, 15, 10, 0.05));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -994,7 +960,7 @@
       top: 0; left: 50%;
       transform: translateX(-50%);
       width: 600px; height: 600px;
-      background: radial-gradient(circle, rgba(255, 107, 53, 0.06) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(185, 56, 18, 0.04) 0%, transparent 70%);
       pointer-events: none;
     }
     .final-cta .section-title { margin-bottom: 16px; }
@@ -1144,7 +1110,7 @@
     }
 
     /* === SELECTION === */
-    ::selection { background: rgba(255, 107, 53, 0.3); color: var(--color-text-primary); }
+    ::selection { background: rgba(185, 56, 18, 0.15); color: var(--color-text-primary); }
 
     /* === COUNTER === */
     .counter { display: inline-block; }
@@ -1206,7 +1172,7 @@
       transition: background 0.2s;
       vertical-align: top;
     }
-    .prognosis-table tr:hover td { background: rgba(255, 107, 53, 0.03); }
+    .prognosis-table tr:hover td { background: rgba(185, 56, 18, 0.025); }
     .prognosis-table .source-name { color: var(--color-text-primary); font-weight: 600; white-space: nowrap; }
     .prognosis-table .highlight-cell { color: var(--color-highlight); font-weight: 700; }
     @media (max-width: 600px) {
@@ -1241,7 +1207,7 @@
 
     /* === TOUCH TARGET SAFETY === */
     @media (max-width: 768px) {
-      .nav-links a, .mobile-menu a, .hero-cta, .theme-toggle, .back-to-top, .hamburger {
+      .nav-links a, .mobile-menu a, .hero-cta, .back-to-top, .hamburger {
         min-height: 44px;
         min-width: 44px;
         display: inline-flex;
@@ -1290,7 +1256,6 @@
           <li><a href="#alltag">Dein Alltag</a></li>
           <li><a href="#handeln">Handeln</a></li>
         </ul>
-        <button class="theme-toggle" id="themeToggle" aria-label="Theme umschalten">&#9790;</button>
         <button class="hamburger" id="hamburger" aria-label="Menü öffnen">
           <span></span><span></span><span></span>
         </button>
@@ -2689,13 +2654,13 @@
           Erst die Jobs. Dann die Handwerker. Dann die Ärzte. Dann die Pfleger. Und jetzt will die ASI auch noch besser DENKEN als wir? Ich verstehe deine Sorgen jetzt. Sogar besser als vorher.
         </p>
         <p style="color: var(--color-text-warm); font-family: var(--font-display); font-size: clamp(20px, 2.5vw, 28px); font-weight: 600; font-style: italic; line-height: 1.4;">
-          Aber eine Frage hab ich:<br>Wird es OSRS auf Deutsch wieder geben?<sup><a href="#fna16" id="refa16">[A16]</a></sup>
+          Aber eine Frage bleibt:<br>Wird uns die ASI wenigstens die Steuererklärung machen?
         </p>
       </div>
 
       <div class="callout reveal" style="margin-top: 40px;">
         <span class="callout-icon">&#129302;</span>
-        <p>Denn wenn die ASI wirklich alles kann — dann kann sie auch endlich den deutschen OSRS-Server wieder online bringen. Prioritäten, Leute. Prioritäten.</p>
+        <p>Denn wenn die ASI wirklich alles kann — dann kann sie auch endlich das ELSTER-Portal benutzbar machen. Prioritäten, Leute. Prioritäten.</p>
       </div>
 
       <!-- ASI Fußnoten -->
@@ -2717,7 +2682,6 @@
           <li id="fna13"><a href="#refa13">&#8593;</a> Analogy adapted from Eliezer Yudkowsky — MIRI Research, „Intelligence Explosion Microeconomics" (2013)</li>
           <li id="fna14"><a href="#refa14">&#8593;</a> Stuart Russell — „Human Compatible: AI and the Problem of Control" (2019); Anthropic Alignment Research</li>
           <li id="fna15"><a href="#refa15">&#8593;</a> Nick Bostrom — Paperclip Maximizer Thought Experiment (Superintelligence, 2014)</li>
-          <li id="fna16"><a href="#refa16">&#8593;</a> Old School RuneScape (OSRS) — Jagex. Die deutschen Server wurden 2012 abgeschaltet. Die Community wartet seitdem. ASI, wenn du das liest: Bitte.</li>
         </ol>
       </div>
     </div>
@@ -2834,8 +2798,8 @@
       const velocities = new Float32Array(count * 3);
       const colors = new Float32Array(count * 3);
       const palette = [
-        new THREE.Color(0xFF6B35), new THREE.Color(0xD4956A),
-        new THREE.Color(0xE8A87C), new THREE.Color(0x8B4513), new THREE.Color(0xF5EDE8)
+        new THREE.Color(0xB93812), new THREE.Color(0x955A28),
+        new THREE.Color(0xB06E35), new THREE.Color(0x5C3618), new THREE.Color(0xD4B8A0)
       ];
 
       for (let i = 0; i < count; i++) {
@@ -2852,12 +2816,12 @@
       const geo = new THREE.BufferGeometry();
       geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
       geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-      const mat = new THREE.PointsMaterial({ size: 0.02, transparent: true, opacity: 0.7, vertexColors: true, sizeAttenuation: true });
+      const mat = new THREE.PointsMaterial({ size: 0.02, transparent: true, opacity: 0.45, vertexColors: true, sizeAttenuation: true });
       const particles = new THREE.Points(geo, mat);
       scene.add(particles);
 
       const glowGeo = new THREE.SphereGeometry(0.3, 16, 16);
-      const glowMat = new THREE.MeshBasicMaterial({ color: 0xFF6B35, transparent: true, opacity: 0.08 });
+      const glowMat = new THREE.MeshBasicMaterial({ color: 0xB93812, transparent: true, opacity: 0.06 });
       const glowSphere = new THREE.Mesh(glowGeo, glowMat);
       scene.add(glowSphere);
 
@@ -2904,7 +2868,7 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
       });
 
-      if (window.innerWidth < 768) canvas.style.opacity = '0.35';
+      if (window.innerWidth < 768) canvas.style.opacity = '0.25';
     }
 
     // === CURSOR GLOW ===
@@ -3012,20 +2976,6 @@
       });
     }
 
-    // === THEME TOGGLE ===
-    function initThemeToggle() {
-      const btn = document.getElementById('themeToggle');
-      const saved = localStorage.getItem('theme');
-      if (saved) document.documentElement.setAttribute('data-theme', saved);
-      btn.textContent = document.documentElement.getAttribute('data-theme') === 'light' ? '\u2600' : '\u263E';
-      btn.addEventListener('click', () => {
-        const current = document.documentElement.getAttribute('data-theme');
-        const next = current === 'dark' ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-theme', next);
-        localStorage.setItem('theme', next);
-        btn.textContent = next === 'light' ? '\u2600' : '\u263E';
-      });
-    }
 
     // === ANIMATED COUNTERS ===
     function initCounters() {
@@ -3165,19 +3115,19 @@
                     {
                       label: 'Betroffene Jobs (in Mio.)',
                       data: [5, 15, 35, 85, 140, 200],
-                      borderColor: '#FF6B35',
-                      backgroundColor: 'rgba(255, 107, 53, 0.1)',
+                      borderColor: '#B93812',
+                      backgroundColor: 'rgba(185, 56, 18, 0.08)',
                       fill: true, tension: 0.4,
-                      pointBackgroundColor: '#FF6B35', pointBorderColor: '#FF6B35',
+                      pointBackgroundColor: '#B93812', pointBorderColor: '#B93812',
                       pointRadius: 4, borderWidth: 2,
                     },
                     {
                       label: 'Neue Jobs durch AI (in Mio.)',
                       data: [1, 5, 15, 30, 60, 95],
-                      borderColor: '#4CAF50',
-                      backgroundColor: 'rgba(76, 175, 80, 0.05)',
+                      borderColor: '#1D6E38',
+                      backgroundColor: 'rgba(29, 110, 56, 0.05)',
                       fill: true, tension: 0.4,
-                      pointBackgroundColor: '#4CAF50', pointBorderColor: '#4CAF50',
+                      pointBackgroundColor: '#1D6E38', pointBorderColor: '#1D6E38',
                       pointRadius: 4, borderWidth: 2,
                     }
                   ]
@@ -3186,11 +3136,11 @@
                   responsive: true,
                   animation: { duration: 1500, easing: 'easeOutQuart' },
                   plugins: {
-                    legend: { labels: { color: '#A89080', font: { family: 'Plus Jakarta Sans', size: 12 } } }
+                    legend: { labels: { color: '#5F5045', font: { family: 'Plus Jakarta Sans', size: 12 } } }
                   },
                   scales: {
-                    x: { grid: { color: 'rgba(212,149,106,0.06)' }, ticks: { color: '#A89080', font: { family: 'Plus Jakarta Sans' } } },
-                    y: { grid: { color: 'rgba(212,149,106,0.06)' }, ticks: { color: '#A89080', font: { family: 'Plus Jakarta Sans' } } }
+                    x: { grid: { color: 'rgba(26,15,10,0.06)' }, ticks: { color: '#5F5045', font: { family: 'Plus Jakarta Sans' } } },
+                    y: { grid: { color: 'rgba(26,15,10,0.06)' }, ticks: { color: '#5F5045', font: { family: 'Plus Jakarta Sans' } } }
                   }
                 }
               });
@@ -3217,15 +3167,15 @@
                   {
                     label: 'KI Genauigkeit (%)',
                     data: [85, 92, 94, 87, 92.6, 67.9],
-                    backgroundColor: 'rgba(255, 107, 53, 0.7)',
-                    borderColor: '#FF6B35',
+                    backgroundColor: 'rgba(185, 56, 18, 0.65)',
+                    borderColor: '#B93812',
                     borderWidth: 1, borderRadius: 6,
                   },
                   {
                     label: 'Arzt Genauigkeit (%)',
                     data: [20, 78, null, 79.8, 92.9, 52.1],
-                    backgroundColor: 'rgba(168, 144, 128, 0.5)',
-                    borderColor: '#A89080',
+                    backgroundColor: 'rgba(95, 80, 69, 0.35)',
+                    borderColor: '#5F5045',
                     borderWidth: 1, borderRadius: 6,
                   }
                 ]
@@ -3236,18 +3186,20 @@
                 animation: { duration: 1500, easing: 'easeOutQuart' },
                 interaction: { mode: 'index', intersect: false },
                 plugins: {
-                  legend: { labels: { color: '#A89080', font: { family: 'Plus Jakarta Sans', size: 11 }, boxWidth: 12 } },
+                  legend: { labels: { color: '#5F5045', font: { family: 'Plus Jakarta Sans', size: 11 }, boxWidth: 12 } },
                   tooltip: {
-                    backgroundColor: 'rgba(13,9,6,0.9)',
+                    backgroundColor: 'rgba(26,20,18,0.92)',
+                    titleColor: '#F5EDE8',
+                    bodyColor: '#F5EDE8',
                     titleFont: { family: 'Plus Jakarta Sans' },
                     bodyFont: { family: 'Plus Jakarta Sans' },
-                    borderColor: 'rgba(212,149,106,0.2)', borderWidth: 1, padding: 12,
+                    borderColor: 'rgba(26,15,10,0.15)', borderWidth: 1, padding: 12,
                     callbacks: { label: (c) => c.dataset.label + ': ' + (c.raw !== null ? c.raw + '%' : 'N/A') }
                   }
                 },
                 scales: {
-                  x: { max: 100, grid: { color: 'rgba(212,149,106,0.06)' }, ticks: { color: '#A89080', font: { family: 'Plus Jakarta Sans', size: 11 }, callback: v => v + '%' } },
-                  y: { grid: { display: false }, ticks: { color: '#A89080', font: { family: 'Plus Jakarta Sans', size: 11 } } }
+                  x: { max: 100, grid: { color: 'rgba(26,15,10,0.06)' }, ticks: { color: '#5F5045', font: { family: 'Plus Jakarta Sans', size: 11 }, callback: v => v + '%' } },
+                  y: { grid: { display: false }, ticks: { color: '#5F5045', font: { family: 'Plus Jakarta Sans', size: 11 } } }
                 }
               }
             });
@@ -3273,27 +3225,27 @@
                   {
                     label: 'Arbeitslose (Mio.) — KI + Roboter Szenario',
                     data: [2.7, 2.9, 3.4, 4.2, 5.5, 6.8, 7.5, 6.2, 4.8],
-                    borderColor: '#FF4444',
-                    backgroundColor: 'rgba(255, 68, 68, 0.1)',
+                    borderColor: '#B82534',
+                    backgroundColor: 'rgba(184, 37, 52, 0.08)',
                     fill: true, tension: 0.4,
-                    pointBackgroundColor: '#FF4444', pointRadius: 5, borderWidth: 2.5,
+                    pointBackgroundColor: '#B82534', pointRadius: 5, borderWidth: 2.5,
                   },
                   {
                     label: 'Arbeitslose (Mio.) — nur KI-Software',
                     data: [2.7, 2.8, 3.1, 3.6, 4.2, 4.6, 4.8, 4.2, 3.5],
-                    borderColor: '#FF6B35',
-                    backgroundColor: 'rgba(255, 107, 53, 0.05)',
+                    borderColor: '#B93812',
+                    backgroundColor: 'rgba(185, 56, 18, 0.05)',
                     fill: true, tension: 0.4,
-                    pointBackgroundColor: '#FF6B35', pointRadius: 4, borderWidth: 2,
+                    pointBackgroundColor: '#B93812', pointRadius: 4, borderWidth: 2,
                     borderDash: [5, 5],
                   },
                   {
                     label: 'Neue Jobs (Mio.)',
                     data: [0.5, 0.8, 1.2, 1.8, 2.5, 3.5, 4.5, 5.8, 7.0],
-                    borderColor: '#4CAF50',
-                    backgroundColor: 'rgba(76, 175, 80, 0.05)',
+                    borderColor: '#1D6E38',
+                    backgroundColor: 'rgba(29, 110, 56, 0.05)',
                     fill: true, tension: 0.4,
-                    pointBackgroundColor: '#4CAF50', pointRadius: 4, borderWidth: 2,
+                    pointBackgroundColor: '#1D6E38', pointRadius: 4, borderWidth: 2,
                   }
                 ]
               },
@@ -3302,19 +3254,21 @@
                 animation: { duration: 2000, easing: 'easeOutQuart' },
                 interaction: { mode: 'index', intersect: false },
                 plugins: {
-                  legend: { labels: { color: '#A89080', font: { family: 'Plus Jakarta Sans', size: 11 }, boxWidth: 12 } },
+                  legend: { labels: { color: '#5F5045', font: { family: 'Plus Jakarta Sans', size: 11 }, boxWidth: 12 } },
                   tooltip: {
-                    backgroundColor: 'rgba(13, 9, 6, 0.9)',
+                    backgroundColor: 'rgba(26, 20, 18, 0.92)',
+                    titleColor: '#F5EDE8',
+                    bodyColor: '#F5EDE8',
                     titleFont: { family: 'Plus Jakarta Sans' },
                     bodyFont: { family: 'Plus Jakarta Sans' },
-                    borderColor: 'rgba(212, 149, 106, 0.2)',
+                    borderColor: 'rgba(26, 15, 10, 0.15)',
                     borderWidth: 1,
                     padding: 12,
                   }
                 },
                 scales: {
-                  x: { grid: { color: 'rgba(212,149,106,0.06)' }, ticks: { color: '#A89080', font: { family: 'Plus Jakarta Sans', size: 11 } } },
-                  y: { grid: { color: 'rgba(212,149,106,0.06)' }, ticks: { color: '#A89080', font: { family: 'Plus Jakarta Sans', size: 11 }, callback: v => v + ' Mio.' } }
+                  x: { grid: { color: 'rgba(26,15,10,0.06)' }, ticks: { color: '#5F5045', font: { family: 'Plus Jakarta Sans', size: 11 } } },
+                  y: { grid: { color: 'rgba(26,15,10,0.06)' }, ticks: { color: '#5F5045', font: { family: 'Plus Jakarta Sans', size: 11 }, callback: v => v + ' Mio.' } }
                 }
               }
             });
@@ -3345,7 +3299,6 @@
       initScrollProgress();
       initNav();
       initHamburger();
-      initThemeToggle();
       initCounters();
       initJobBars();
       initTimeline();

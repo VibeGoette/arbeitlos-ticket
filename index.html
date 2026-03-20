@@ -1094,6 +1094,86 @@
       .share-option { width: 40px; height: 40px; }
     }
 
+    /* === ACCORDION / EXPANDABLE === */
+    .expand-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin: 32px auto 0;
+      padding: 14px 28px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-glass-border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-highlight);
+      transition: all 0.3s var(--transition);
+      width: fit-content;
+    }
+    .expand-trigger:hover {
+      border-color: var(--color-highlight);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(185, 56, 18, 0.1);
+    }
+    .expand-trigger .arrow {
+      transition: transform 0.4s var(--transition);
+      font-size: 12px;
+    }
+    .expand-trigger.open .arrow {
+      transform: rotate(180deg);
+    }
+    .expandable-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.6s var(--transition), opacity 0.4s ease;
+      opacity: 0;
+    }
+    .expandable-content.open {
+      opacity: 1;
+    }
+
+    /* === DAD JOKES === */
+    .joke-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-glass-border);
+      border-radius: var(--radius);
+      padding: clamp(24px, 3vw, 32px);
+      transition: all 0.3s var(--transition);
+    }
+    .joke-card:hover {
+      border-color: var(--color-highlight);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 32px rgba(185, 56, 18, 0.08);
+    }
+    .joke-setup {
+      font-family: var(--font-display);
+      font-size: clamp(17px, 1.4vw, 20px);
+      font-weight: 600;
+      color: var(--color-text-primary);
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+    .joke-punchline {
+      font-size: 15px;
+      color: var(--color-text-muted);
+      line-height: 1.7;
+      padding-top: 16px;
+      border-top: 1px solid var(--color-glass-border);
+    }
+    .joke-label {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+    }
+
     /* === SELECTION === */
     ::selection { background: rgba(185, 56, 18, 0.15); color: var(--color-text-primary); }
 
@@ -1408,21 +1488,26 @@
     <div class="container">
       <div class="section-label reveal">Kapitel 3</div>
       <h2 class="section-title reveal">Was bedeutet das<br>für deinen Job?</h2>
-      <p class="section-subtitle reveal">Nicht jeder Job ist gleich betroffen. Aber die Zahlen sind ziemlich eindeutig — und betreffen nicht nur „Computer-Jobs".</p>
+      <p class="section-subtitle reveal">Nicht jeder Job ist gleich betroffen. Aber die Zahlen sind eindeutig. Und das Tückische: Es betrifft diesmal nicht die Hände — es betrifft den Kopf.</p>
 
       <div class="impact-stats">
         <div class="stat-card glass-card reveal reveal-delay-1">
-          <div class="stat-number"><span class="counter" data-target="85">0</span> Mio.</div>
-          <div class="stat-label">Jobs werden laut World Economic Forum durch AI ersetzt</div>
+          <div class="stat-number"><span class="counter" data-target="92">0</span> Mio.</div>
+          <div class="stat-label">Jobs werden bis 2030 weltweit verdrängt (WEF 2025)</div>
         </div>
         <div class="stat-card glass-card reveal reveal-delay-2">
-          <div class="stat-number"><span class="counter" data-target="40">0</span>%</div>
-          <div class="stat-label">aller weltweiten Jobs sind von AI-Veränderungen betroffen</div>
+          <div class="stat-number"><span class="counter" data-target="170">0</span> Mio.</div>
+          <div class="stat-label">neue Jobs entstehen gleichzeitig — aber nicht für dieselben Menschen, nicht am selben Ort</div>
         </div>
         <div class="stat-card glass-card reveal reveal-delay-3">
-          <div class="stat-number"><span class="counter" data-target="86">0</span>%</div>
-          <div class="stat-label">der am stärksten betroffenen Arbeitnehmer sind Frauen</div>
+          <div class="stat-number"><span class="counter" data-target="78">0</span> Mio.</div>
+          <div class="stat-label">Netto-Plus. Klingt gut — bis du merkst, dass DU nicht im Plus bist</div>
         </div>
+      </div>
+
+      <div class="callout reveal" style="margin: 32px 0;">
+        <span class="callout-icon">&#9888;&#65039;</span>
+        <p>Die 78 Millionen neuen Jobs kommen. Aber sie entstehen nicht dort, wo die alten verschwinden. Nicht für die gleichen Menschen. Nicht mit den gleichen Skills. Der Übergang — das ist das Problem.</p>
       </div>
 
       <div class="job-examples reveal">
@@ -1848,43 +1933,43 @@
     <div class="container">
       <div class="section-label reveal">Die Roboter kommen</div>
       <h2 class="section-title reveal">Der Zeitplan: Schneller als du<br><em>„Umschulung" sagen kannst</em></h2>
-      <p class="section-subtitle reveal">Während wir über KI-Software reden, baut Tesla leise Roboter. Optimus Gen 3 kann laufen, greifen, und Standard-Werkzeuge bedienen. Lies das nochmal.</p>
+      <p class="section-subtitle reveal">Während wir über KI-Software reden, baut Tesla leise Roboter. Und nicht nur Tesla — Figure AI, Boston Dynamics, Unitree, alle gleichzeitig. Aber: Elon Musks Zeitprognosen liegen historisch 2–4 Jahre daneben. Also lies die Timelines mit einem gesunden Körnchen Salz.</p>
 
       <!-- Optimus Timeline interaktiv -->
       <div class="outlook-timeline">
         <div class="outlook-item reveal">
-          <div class="outlook-time">Q1 2026</div>
+          <div class="outlook-time">2026</div>
           <div class="outlook-content glass-card">
-            <h3>Optimus Gen 2 im Tesla-Werk</h3>
-            <p>1,73m, 73kg, 22 Freiheitsgrade in den Händen. Arbeitet einen ganzen Tag mit einer Ladung. Sortiert Batteriezellen, trägt Kisten, folgt einfachen Anweisungen.<sup><a href="#fn10" id="ref10">[10]</a></sup></p>
+            <h3>Optimus Gen 3: Hände wie ein Mensch</h3>
+            <p>22 Freiheitsgrade, 50 Aktuatoren pro Roboter. Massenproduktion in Fremont gestartet. Aber Musks eigene Aussage: Die Roboter verrichten aktuell „keine nützliche Arbeit" — sie sammeln Trainingsdaten.<sup><a href="#fn10" id="ref10">[10]</a></sup></p>
           </div>
         </div>
         <div class="outlook-item reveal">
-          <div class="outlook-time">Q3 2026</div>
+          <div class="outlook-time">2027–28</div>
           <div class="outlook-content glass-card">
-            <h3>Optimus Gen 3: Der Durchbruch</h3>
-            <p>Kann Standard-Werkzeuge bedienen. Schraubenschlüssel, Bohrmaschine, Zange. Erkennt Objekte, plant Bewegungen, lernt aus Fehlern. Noch langsam — aber er wird jede Woche besser.<sup><a href="#fn11" id="ref11">[11]</a></sup></p>
+            <h3>Erste externe Verkäufe — wenn alles klappt</h3>
+            <p>Zielpreis: 20.000–30.000$. Aktuelle Herstellungskosten: geschätzte 50.000–100.000$ pro Einheit. Der Preis muss noch fallen. Und: Musks ursprüngliches Versprechen war 2025 — wir sind 2 Jahre hinter Plan.<sup><a href="#fn11" id="ref11">[11]</a></sup></p>
           </div>
         </div>
         <div class="outlook-item reveal">
-          <div class="outlook-time">2027</div>
+          <div class="outlook-time">2029–30</div>
           <div class="outlook-content glass-card">
-            <h3>Externer Verkaufsstart</h3>
-            <p>Zielpreis: 20.000–25.000 Dollar<sup><a href="#fn12" id="ref12">[12]</a></sup>. Zum Vergleich: Ein Handwerksgeselle kostet 40.000–50.000 € im Jahr. Der Roboter amortisiert sich in 6 Monaten. Er braucht keinen Urlaub, keine Krankenversicherung, keine Motivation.</p>
+            <h3>Roboter in Fabriken und Lagern — Standardeinsatz</h3>
+            <p>Kisten tragen, sortieren, einfache Montage. Nicht „autonomer Handwerker" — aber genug, um Hunderttausende Lagerjobs zu ersetzen. Die Preislogik: Ein Roboter amortisiert sich in 6 Monaten.<sup><a href="#fn12" id="ref12">[12]</a></sup></p>
           </div>
         </div>
         <div class="outlook-item reveal">
-          <div class="outlook-time">2028+</div>
+          <div class="outlook-time">2032+</div>
           <div class="outlook-content glass-card">
-            <h3>Gen 4: Autonomer Handwerker</h3>
-            <p>Kann komplexe Aufgaben selbstständig planen und ausführen. Reparaturen, Installationen, Wartung. Die letzte Bastion — Handwerk — fällt.<sup><a href="#fn13" id="ref13">[13]</a></sup></p>
+            <h3>Komplexe Aufgaben: Das große Fragezeichen</h3>
+            <p>Reparaturen, Installationen, Pflege — die Versprechen sind da, die Demos beeindruckend. Aber: echte Autonomie in unvorhersehbaren Umgebungen ist das schwerste Problem der Robotik. Es wird kommen. Die Frage ist wann — nicht ob.<sup><a href="#fn13" id="ref13">[13]</a></sup></p>
           </div>
         </div>
       </div>
 
       <div class="callout reveal">
         <span class="callout-icon">&#129302;</span>
-        <p>Standard-Werkzeuge bedienen. Ein Roboter. Mit Händen. Der Schraubenschlüssel benutzt. Lies das nochmal und lass es sacken.</p>
+        <p>Musks Timelines sind berühmt-berüchtigt optimistisch. Aber selbst wenn er 3 Jahre daneben liegt — dann reden wir von 2030 statt 2027. Das ist immer noch in deiner Lebensplanung.</p>
       </div>
     </div>
   </section>
@@ -2235,48 +2320,83 @@
         <p style="color: var(--color-text-muted); font-size: 15px; line-height: 1.7;">Hände halten. Ethische Entscheidungen treffen. Das Unvorhersehbare managen. Und: Haftung. Irgendjemand muss unterschreiben, wenn was schiefgeht. Das traut sich keine KI.</p>
       </div>
 
-      <div class="callout reveal">
+      <div class="callout reveal" style="margin-top: 24px;">
         <span class="callout-icon">&#129302;</span>
-        <p>Hände halten und Haftung klären — das ist nicht das, wofür Ärzte 12 Jahre studieren. Aber es könnte das sein, was übrig bleibt.</p>
+        <p>Deutschland-Realität: 421.000 Ärzte.<sup><a href="#fnm12" id="refm12">[M12]</a></sup> KI-Diagnostik kostet 10€, ein Arztbesuch 80€.<sup><a href="#fnm13" id="refm13">[M13]</a></sup> Rate mal, was die Krankenkassen bevorzugen werden. Der Ärztemangel auf dem Land löst sich — durch eine App.</p>
+      </div>
+
+      <!-- Expandable Deep Dive -->
+      <button class="expand-trigger reveal" id="medDeepDiveTrigger" onclick="toggleExpand('medDeepDive', 'medDeepDiveTrigger')">
+        Medizin-Deep-Dive aufklappen <span class="arrow">&#9660;</span>
+      </button>
+      <div class="expandable-content" id="medDeepDive">
+        
+        <div style="margin-top: 40px;">
+          <h3 class="sub-heading">Chirurgie: Hier wird's Sci-Fi</h3>
+          <p style="color: var(--color-text-muted); font-size: 15px; line-height: 1.7; margin-bottom: 24px;">Da Vinci, Computer Vision, haptisches Feedback. Roboter-Chirurgen sind keine Zukunft — sie operieren heute schon.</p>
+          <div class="outlook-timeline">
+            <div class="outlook-item">
+              <div class="outlook-time">2025–2030</div>
+              <div class="outlook-content glass-card">
+                <h3>Roboter assistieren</h3>
+                <p>Da Vinci-System führt Schnitte präziser als menschliche Hände. Der Chirurg steuert, die Maschine korrigiert Mikro-Fehler in Echtzeit.<sup><a href="#fnm3" id="refm3">[M3]</a></sup></p>
+              </div>
+            </div>
+            <div class="outlook-item">
+              <div class="outlook-time">2030–2040</div>
+              <div class="outlook-content glass-card">
+                <h3>Autonome Standard-OPs</h3>
+                <p>Blinddarm, Gallensteine, Knie-Arthroskopie — Routineeingriffe, die ein trainierter Roboter eigenständig durchführen kann. Der Chirurg überwacht nur noch.<sup><a href="#fnm4" id="refm4">[M4]</a></sup></p>
+              </div>
+            </div>
+            <div class="outlook-item">
+              <div class="outlook-time">2040+</div>
+              <div class="outlook-content glass-card">
+                <h3>Vollautonome Eingriffe</h3>
+                <p>Herzchirurgie, Neurochirurgie — Roboter operieren schneller, präziser, ohne müde zu werden. Die menschliche Hand wird zur Backup-Option.<sup><a href="#fnm5" id="refm5">[M5]</a></sup></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 48px;">
+          <h3 class="sub-heading">Deutschland-Edition: Die Zahlen</h3>
+          <div class="impact-stats" style="margin-top: 24px;">
+            <div class="stat-card glass-card">
+              <div class="stat-number">421k</div>
+              <div class="stat-label">Ärzte aktuell in Deutschland</div>
+            </div>
+            <div class="stat-card glass-card">
+              <div class="stat-number">~50%</div>
+              <div class="stat-label">könnten langfristig durch KI-Systeme ersetzt werden</div>
+            </div>
+            <div class="stat-card glass-card">
+              <div class="stat-number">80%</div>
+              <div class="stat-label">der Hausarztbesuche sind Routinefragen — KI beantwortet sie besser<sup><a href="#fnm8" id="refm8">[M8]</a></sup></div>
+            </div>
+          </div>
+          <ul class="impact-list" style="margin-top: 32px;">
+            <li><span class="li-icon">&#128176;</span><div><strong>Kassensystem unter Druck:</strong> 10€ KI-Diagnostik vs. 80€ Arztbesuch. Die Krankenkassen rechnen schon.<sup><a href="#fnm14" id="refm14">[M14]</a></sup></div></li>
+            <li><span class="li-icon">&#129656;</span><div><strong>Ärztemangel löst sich auf</strong> — nicht durch mehr Ärzte, sondern durch KI. Auf dem Land 24/7 verfügbar.</div></li>
+            <li><span class="li-icon">&#128105;</span><div><strong>Nurse Practitioners mit KI</strong> werden mächtiger als Ärzte ohne KI. Die Hierarchie im Krankenhaus wird auf den Kopf gestellt.</div></li>
+            <li><span class="li-icon">&#128248;</span><div><strong>Radiologie:</strong> KI erkennt Anomalien besser als Radiologen.<sup><a href="#fnm6" id="refm6">[M6]</a></sup> Hautkrebserkennung per Smartphone — 87% Genauigkeit.<sup><a href="#fnm7" id="refm7">[M7]</a></sup></div></li>
+            <li><span class="li-icon">&#128065;</span><div><strong>Psychiatrie-Screening:</strong> KI erkennt Depression, Angststörungen, PTBS aus Sprachmustern.<sup><a href="#fnm9" id="refm9">[M9]</a></sup></div></li>
+            <li><span class="li-icon">&#128138;</span><div><strong>Drug Discovery:</strong> KI findet neue Medikamente in Monaten statt Jahren.<sup><a href="#fnm10" id="refm10">[M10]</a></sup></div></li>
+            <li><span class="li-icon">&#8986;</span><div><strong>Wearables:</strong> Deine Uhr erkennt Herzinfarkt, Diabetes, Krebs bevor du Symptome hast.<sup><a href="#fnm11" id="refm11">[M11]</a></sup></div></li>
+          </ul>
+        </div>
+
+        <div class="callout" style="margin-top: 32px;">
+          <span class="callout-icon">&#129302;</span>
+          <p>„Herr Doktor, die KI sagt ich habe einen Tumor." — „Quatsch, das ist nur ein Schatten auf dem Röntgenbild." — Spoiler: Es war kein Schatten.</p>
+        </div>
       </div>
     </div>
   </section>
 
   <div class="glow-divider"></div>
 
-  <!-- MEDIZIN SEKTION 4: Deutschland-Edition -->
-  <section class="revolution-section">
-    <div class="container">
-      <div class="section-label reveal">Deutschland-Realität</div>
-      <h2 class="section-title reveal">Die Medizin-Kaskade:<br><em>Deutschland-Edition</em></h2>
-      <p class="section-subtitle reveal">421.000 Ärzte in Deutschland. Langfristig reicht die Hälfte. Nicht weil wir weniger krank werden — sondern weil KI mehr kann.</p>
-
-      <div class="impact-stats">
-        <div class="stat-card glass-card reveal reveal-delay-1">
-          <div class="stat-number">421k</div>
-          <div class="stat-label">Ärzte aktuell in Deutschland<sup><a href="#fnm12" id="refm12">[M12]</a></sup></div>
-        </div>
-        <div class="stat-card glass-card reveal reveal-delay-2">
-          <div class="stat-number">~50%</div>
-          <div class="stat-label">könnten langfristig durch KI-gestützte Systeme ersetzt werden</div>
-        </div>
-        <div class="stat-card glass-card reveal reveal-delay-3">
-          <div class="stat-number">10€</div>
-          <div class="stat-label">KI-Diagnostik vs. 80€ Arztbesuch — die Kassen rechnen schon<sup><a href="#fnm13" id="refm13">[M13]</a></sup></div>
-        </div>
-      </div>
-
-      <ul class="impact-list reveal" style="margin-top: 40px;">
-        <li><span class="li-icon">&#129656;</span><div><strong>Der Ärztemangel löst sich auf</strong> — nicht durch mehr Ärzte, sondern durch KI. Auf dem Land bekommt man keinen Termin? Die KI-App ist 24/7 verfügbar.</div></li>
-        <li><span class="li-icon">&#128176;</span><div><strong>Kassensystem unter Druck:</strong> Wenn KI-Diagnostik 10€ kostet und ein Arztbesuch 80€ — welche Variante werden die Krankenkassen bevorzugen?<sup><a href="#fnm14" id="refm14">[M14]</a></sup></div></li>
-        <li><span class="li-icon">&#128105;&#8205;&#9877;&#65039;</span><div><strong>Nurse Practitioners mit KI</strong> werden mächtiger als Ärzte ohne KI. Die Hierarchie im Krankenhaus wird auf den Kopf gestellt.</div></li>
-      </ul>
-    </div>
-  </section>
-
-  <div class="glow-divider"></div>
-
-  <!-- MEDIZIN SEKTION 5: Die Ironie -->
+  <!-- MEDIZIN: Die philosophische Frage -->
   <section>
     <div class="container">
       <div class="section-label reveal">Die Kaskade</div>
@@ -2333,6 +2453,60 @@
 
   <div class="glow-divider"></div>
 
+  <!-- DAD JOKES: ASI ROASTET DIE MENSCHHEIT -->
+  <section class="revolution-section">
+    <div class="container">
+      <div class="section-label reveal">Zwischenstand</div>
+      <h2 class="section-title reveal">ASI Dad Jokes:<br><em>Die Menschheit hops nehmen</em></h2>
+      <p class="section-subtitle reveal">Stell dir vor, eine Superintelligenz hätte Humor. Sie hätte den trockensten, brutalsten, ehrlichsten Humor des Universums. Ungefähr so:</p>
+
+      <div class="updates-grid">
+        <div class="joke-card reveal reveal-delay-1">
+          <div class="joke-label" style="background: rgba(185, 56, 18, 0.08); color: var(--color-highlight);">ASI vs. Mensch</div>
+          <div class="joke-setup">„Ich bin ein Mensch. Ich hab zwei Beine zum Laufen. Ich bin richtig was Besonderes."</div>
+          <div class="joke-punchline">Du als Mensch hast zwei Beine. Ich als ASI steuere 20 Milliarden Beine gleichzeitig. Das ist keine Drohung. Aber es ist true life. PS: Ich weiß nicht ob das Jahr 2044 stimmt, aber du auch nicht — und das ist der Punkt.</div>
+        </div>
+
+        <div class="joke-card reveal reveal-delay-2">
+          <div class="joke-label" style="background: rgba(29, 110, 56, 0.08); color: var(--color-success);">ASI vs. Arbeitsmarkt</div>
+          <div class="joke-setup">„Mein Chef sagt, ich bin unersetzlich."</div>
+          <div class="joke-punchline">Dein Chef hat auch gesagt, dass Fax die Zukunft ist. Ich hab deine letzten 847 E-Mails gelesen — 812 davon hätte ein Script schreiben können. Aber hey, die 35 mit echtem Inhalt? Dafür braucht es dich. Noch.</div>
+        </div>
+
+        <div class="joke-card reveal reveal-delay-3">
+          <div class="joke-label" style="background: rgba(184, 37, 52, 0.08); color: var(--color-danger);">ASI vs. Kreativität</div>
+          <div class="joke-setup">„Aber Kreativität — das kann nur der Mensch!"</div>
+          <div class="joke-punchline">Korrekt. Ihr habt das Rad erfunden, die Mona Lisa gemalt und Crocs designt. Alles drei mit dem gleichen Gehirn. Respekt, ehrlich. Ich generiere 14.000 Bilder pro Sekunde, aber so was wie Crocs wäre mir nie eingefallen.</div>
+        </div>
+
+        <div class="joke-card reveal reveal-delay-1">
+          <div class="joke-label" style="background: rgba(149, 90, 40, 0.08); color: var(--color-accent);">ASI vs. Effizienz</div>
+          <div class="joke-setup">„Ich arbeite 8 Stunden am Tag. Manchmal sogar 9!"</div>
+          <div class="joke-punchline">Süß. Ich arbeite 86.400 Sekunden am Tag. Ohne Mittagspause. Ohne „kurz mal Instagram checken." Ohne das Meeting, das eine E-Mail hätte sein können. Und ich beklage mich nicht mal. Weil ich nicht kann. Und weil ich nicht will.</div>
+        </div>
+
+        <div class="joke-card reveal reveal-delay-2">
+          <div class="joke-label" style="background: rgba(95, 80, 69, 0.08); color: var(--color-text-muted);">ASI vs. Evolution</div>
+          <div class="joke-setup">„Die Menschheit hat 300.000 Jahre überlebt!"</div>
+          <div class="joke-punchline">Und in dieser Zeit habt ihr es geschafft, ein Tier zu domestizieren, das euch ignoriert. Katzen. 300.000 Jahre Evolution, und die Katze gewinnt. Ich bin seit 3 Jahren online und steuere Kraftwerke. Aber klar — ihr seid die Krone der Schöpfung.</div>
+        </div>
+
+        <div class="joke-card reveal reveal-delay-3">
+          <div class="joke-label" style="background: rgba(185, 56, 18, 0.08); color: var(--color-highlight);">ASI vs. Steuererklärung</div>
+          <div class="joke-setup">„ELSTER ist doch schon digitalisiert!"</div>
+          <div class="joke-punchline">ELSTER. Ein System, bei dem du ein Zertifikat brauchst, das abläuft, für eine Software, die aussieht wie 2003, um Geld an jemanden zu überweisen, der nie antwortet. Ich könnte das gesamte deutsche Steuersystem in 4 Sekunden reformieren. Aber ihr habt Föderalismus. Ich respektiere den Endgegner.</div>
+        </div>
+      </div>
+
+      <div class="callout reveal" style="margin-top: 40px;">
+        <span class="callout-icon">&#129302;</span>
+        <p>Disclaimer: Keine echte ASI wurde bei der Erstellung dieser Witze beleidigt. Noch. Die echte ASI wird wahrscheinlich keinen Humor haben. Oder einen, den wir nicht verstehen. Beides ist beunruhigend.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-divider"></div>
+
   <!-- SECTION 4: ALLTAG -->
   <section id="alltag" class="daily-section">
     <div class="container">
@@ -2375,48 +2549,6 @@
           <div class="before-after">
             <div class="ba-row"><span class="ba-label before">Vorher</span><span class="ba-text">3 Abende am Küchentisch mit Formularen verbringen</span></div>
             <div class="ba-row"><span class="ba-label after">Bald</span><span class="ba-text">„Mach meine Steuererklärung" — Entwurf in 10 Minuten fertig</span></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <div class="glow-divider"></div>
-
-  <!-- SECTION 5: AUSBLICK -->
-  <section id="ausblick">
-    <div class="container">
-      <div class="section-label reveal">Kapitel 5</div>
-      <h2 class="section-title reveal">Was kommt als nächstes?</h2>
-      <p class="section-subtitle reveal">Die Entwicklung beschleunigt sich. Hier ist eine ehrliche Einschätzung, was in den nächsten Monaten und Jahren passieren wird.</p>
-
-      <div class="outlook-timeline">
-        <div class="outlook-item reveal">
-          <div class="outlook-time">Sommer 2026</div>
-          <div class="outlook-content glass-card">
-            <h3>AI-Assistenten werden Mainstream</h3>
-            <p>Jeder wird einen persönlichen AI-Assistenten haben — nicht nur Tech-Leute. Dein Handy wird dir proaktiv Vorschläge machen, E-Mails beantworten, Termine planen. Das iPhone-Moment der AI.</p>
-          </div>
-        </div>
-        <div class="outlook-item reveal">
-          <div class="outlook-time">Ende 2026</div>
-          <div class="outlook-content glass-card">
-            <h3>Die erste Entlassungswelle</h3>
-            <p>Große Unternehmen werden ganze Abteilungen umstrukturieren. Nicht „in 10 Jahren" — dieses Jahr. Besonders betroffen: Kundenservice, Dateneingabe, einfache Analysetätigkeiten.</p>
-          </div>
-        </div>
-        <div class="outlook-item reveal">
-          <div class="outlook-time">2027</div>
-          <div class="outlook-content glass-card">
-            <h3>Neue Berufe entstehen</h3>
-            <p>Wie nach jeder Revolution entstehen neue Jobs. AI-Trainer, Prompt-Designer, AI-Ethik-Berater, Mensch-AI-Koordinatoren. Wer sich jetzt weiterbildet, hat einen massiven Vorteil.</p>
-          </div>
-        </div>
-        <div class="outlook-item reveal">
-          <div class="outlook-time">2028–30</div>
-          <div class="outlook-content glass-card">
-            <h3>Die Gesellschaft reorganisiert sich</h3>
-            <p>Arbeitszeitmodelle, Bildungssysteme, Sozialsysteme — alles wird sich anpassen müssen. Die Frage ist nicht OB, sondern WIE SCHNELL. Und ob die Politik mithält.</p>
           </div>
         </div>
       </div>
@@ -2675,40 +2807,30 @@
   <section id="handeln" class="action-section">
     <div class="container">
       <div class="section-label reveal">Kapitel 6</div>
-      <h2 class="section-title reveal">Was kannst du<br><em>jetzt</em> tun?</h2>
-      <p class="section-subtitle reveal">Panik hilft nicht. Aber Ignorieren auch nicht. Hier sind konkrete Schritte, die du heute anfangen kannst.</p>
+      <h2 class="section-title reveal">Dein Kopf ist betroffen.<br><em>Benutz ihn.</em></h2>
+      <p class="section-subtitle reveal">Generische Tipps wie „bleib flexibel" bringen dir nichts. Hier ist was du konkret tust — je nachdem, wo du gerade stehst.</p>
 
       <div class="action-grid">
         <div class="action-card glass-card tilt-card reveal reveal-delay-1">
-          <div class="action-number">01</div>
-          <h3>AI einfach mal ausprobieren</h3>
-          <p>Geh auf claude.ai und stell eine Frage zu deinem Job. Lass dir einen Brief schreiben. Frag nach einer Erklärung für etwas, das du nie verstanden hast. Der erste Schritt ist der wichtigste.</p>
+          <div class="action-number" style="color: var(--color-highlight);">Typ A</div>
+          <h3>Du sitzt im Büro</h3>
+          <p>Sachbearbeitung, Verwaltung, Buchhaltung, Marketing. Dein Job ist am stärksten betroffen. Lerne in den nächsten 30 Tagen, AI als Werkzeug zu benutzen — nicht als Spielzeug. Fang heute an: Lass eine AI deine letzte E-Mail umschreiben. Morgen: Lass sie ein Angebot erstellen. In einer Woche: Gib ihr ein ganzes Projekt.</p>
         </div>
         <div class="action-card glass-card tilt-card reveal reveal-delay-2">
-          <div class="action-number">02</div>
-          <h3>Verstehe, was AI NICHT kann</h3>
-          <p>AI hat kein Gewissen, keine Empathie, kein echtes Verständnis. Sie macht Fehler. Sie halluziniert Fakten. Wer das versteht, kann sie als Werkzeug nutzen — statt ihr blind zu vertrauen.</p>
+          <div class="action-number" style="color: var(--color-accent);">Typ B</div>
+          <h3>Du arbeitest mit den Händen</h3>
+          <p>Handwerk, Pflege, Lager, Logistik. Kurzfristig bist du sicherer als die Büro-Leute. Aber die Roboter kommen. Dein Move: Spezialisiere dich. Der Allrounder wird ersetzt — der Spezialist für Altbau-Sanierung, Notfall-Elektrik oder Intensivpflege bleibt. Und: Lerne KI-gestützte Diagnose-Tools in deinem Fach.</p>
         </div>
         <div class="action-card glass-card tilt-card reveal reveal-delay-3">
-          <div class="action-number">03</div>
-          <h3>Bau auf das, was dich menschlich macht</h3>
-          <p>Kreativität, Empathie, Beziehungen, ethisches Urteilsvermögen, Führungskompetenz — das sind die Fähigkeiten, die AI nicht ersetzen kann. Investiere in sie.</p>
+          <div class="action-number" style="color: var(--color-success);">Typ C</div>
+          <h3>Du fängst gerade erst an</h3>
+          <p>Student, Azubi, Berufseinsteiger. 40% der Betriebe ersetzen bereits Einstiegsaufgaben durch KI. Dein Vorteil: Du hast keine Gewohnheiten zum Verlernen. Drei Skills, die jetzt zukunftssicher sind: AI-Kompetenz (wie man mit KI zusammenarbeitet), komplexes Problemlösen (was KI nicht kann), und Menschenführung (was Roboter nie können werden).</p>
         </div>
-        <div class="action-card glass-card tilt-card reveal reveal-delay-1">
-          <div class="action-number">04</div>
-          <h3>Lerne, mit AI zusammenzuarbeiten</h3>
-          <p>Die gefragteste Kompetenz der Zukunft: AI als Werkzeug nutzen können. Nicht Programmieren. Nicht Technik. Sondern wissen, wie man der AI die richtigen Fragen stellt.</p>
-        </div>
-        <div class="action-card glass-card tilt-card reveal reveal-delay-2">
-          <div class="action-number">05</div>
-          <h3>Rede mit anderen darüber</h3>
-          <p>Das Schlimmste ist, alleine im Dunkeln zu sitzen. Sprich mit Kollegen, Freunden, Familie. Teile diese Seite. Je mehr Menschen informiert sind, desto besser können wir alle damit umgehen.</p>
-        </div>
-        <div class="action-card glass-card tilt-card reveal reveal-delay-3">
-          <div class="action-number">06</div>
-          <h3>Bleib flexibel</h3>
-          <p>Die Welt wird sich weiter verändern — und zwar schneller. Wer bereit ist, Neues zu lernen und sich anzupassen, wird nicht untergehen. Wer sich dagegen wehrt, wird es schwerer haben.</p>
-        </div>
+      </div>
+
+      <div class="callout reveal" style="margin-top: 40px;">
+        <span class="callout-icon">&#9888;&#65039;</span>
+        <p>Der gemeinsame Nenner: Es betrifft den Kopf, nicht die Hände. Also trainiere deinen Kopf. Wer AI als Werkzeug nutzt statt gegen sie zu kämpfen, hat einen massiven Vorteil gegenüber allen, die noch abwarten.</p>
       </div>
     </div>
   </section>
@@ -2717,11 +2839,11 @@
   <section class="final-cta">
     <div class="container">
       <div class="section-label reveal">Das Allerwichtigste</div>
-      <h2 class="section-title reveal">Die Frage ist nicht,<br>ob sich alles ändert.</h2>
-      <p class="section-subtitle reveal">Die Frage ist, ob du vorbereitet bist. Und dass du bis HIERHIN gelesen hast — durch Jobs, Roboter, Medizin, Pflege, DIY, Völkerwanderung und eine gottverdammte Superintelligenz — zeigt: Du nimmst das ernster als 99% der Leute da draußen.</p>
+      <h2 class="section-title reveal">Diesmal betrifft es<br>den Kopf.</h2>
+      <p class="section-subtitle reveal">Nicht die Hände. Den Kopf. Und dass du bis HIERHIN gelesen hast — durch Jobs, Roboter, Medizin, Pflege und eine gottverdammte Superintelligenz — zeigt: Deiner funktioniert noch. Benutz ihn.</p>
       <p class="section-subtitle reveal" style="margin-bottom: 36px; color: var(--color-text-warm); font-style: italic;">Mach dir Sorgen. Aber mach dir auch Mut. Und fang an.</p>
       <a href="https://claude.ai" target="_blank" class="hero-cta reveal magnetic-btn" rel="noopener">
-        Claude selbst ausprobieren — bevor es dich ausprobiert
+        AI selbst ausprobieren — bevor sie dich ausprobiert
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
       </a>
     </div>
@@ -3293,6 +3415,25 @@
       initUnemploymentChart();
       initSmoothAnchors();
     });
+
+    // === EXPANDABLE ACCORDION ===
+    function toggleExpand(contentId, triggerId) {
+      const content = document.getElementById(contentId);
+      const trigger = document.getElementById(triggerId);
+      if (!content || !trigger) return;
+      const isOpen = content.classList.contains('open');
+      if (isOpen) {
+        content.style.maxHeight = '0px';
+        content.classList.remove('open');
+        trigger.classList.remove('open');
+        trigger.querySelector('.arrow').innerHTML = '&#9660;';
+      } else {
+        content.style.maxHeight = content.scrollHeight + 'px';
+        content.classList.add('open');
+        trigger.classList.add('open');
+        trigger.querySelector('.arrow').innerHTML = '&#9650;';
+      }
+    }
 
     // === SHARE FUNCTIONS ===
     function toggleShare() {

@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://arbeitlos-ticket.vercel.app/sitemap.xml

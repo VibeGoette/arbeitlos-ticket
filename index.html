@@ -1,0 +1,3392 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dein Arbeitlos-Ticket | Warum AI gerade alles verändert</title>
+  <meta name="description" content="AI nimmt dir den Job weg. Nicht irgendwann — jetzt. Hier erfährst du was passiert, welche Branchen es trifft und was du tun kannst. Ohne Fachchinesisch, ohne Hype.">
+  
+  <!-- OG / Social Sharing -->
+  <meta property="og:title" content="Dein Arbeitlos-Ticket — Warum AI gerade alles verändert">
+  <meta property="og:description" content="AI nimmt dir den Job weg. Nicht irgendwann — jetzt. Welche Branchen es trifft und was du tun kannst.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://arbeitlos-ticket.vercel.app">
+  <meta property="og:locale" content="de_DE">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Dein Arbeitlos-Ticket — Warum AI gerade alles verändert">
+  <meta name="twitter:description" content="AI nimmt dir den Job weg. Nicht irgendwann — jetzt.">
+  
+  <!-- Canonical -->
+  <link rel="canonical" href="https://arbeitlos-ticket.vercel.app">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,800;1,9..144,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+  <style>
+    /* === RESET === */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    /* === DESIGN TOKENS — DARK === */
+    :root, [data-theme="dark"] {
+      --color-primary: #2C1810;
+      --color-secondary: #8B4513;
+      --color-accent: #D4956A;
+      --color-warm: #E8A87C;
+      --color-highlight: #FF6B35;
+      --color-bg: #0D0906;
+      --color-bg-warm: #1A0F0A;
+      --color-surface: #1E1411;
+      --color-surface-light: #2A1D16;
+      --color-text-primary: #F5EDE8;
+      --color-text-muted: #A89080;
+      --color-text-warm: #D4B8A0;
+      --color-danger: #FF4444;
+      --color-success: #4CAF50;
+      --color-glass: rgba(30, 20, 17, 0.6);
+      --color-glass-border: rgba(212, 149, 106, 0.12);
+      --nav-bg: rgba(13, 9, 6, 0.85);
+
+      --font-display: 'Fraunces', serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+
+      --radius: 16px;
+      --radius-sm: 8px;
+      --radius-lg: 24px;
+      --spacing-section: clamp(80px, 12vw, 160px);
+      --max-width: 1100px;
+      --transition: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* === LIGHT THEME === */
+    [data-theme="light"] {
+      --color-bg: #FBF7F4;
+      --color-bg-warm: #F5EDE8;
+      --color-surface: #FFFFFF;
+      --color-surface-light: #F0E8E2;
+      --color-text-primary: #1A0F0A;
+      --color-text-muted: #6B5B50;
+      --color-text-warm: #4A3728;
+      --color-glass: rgba(255, 255, 255, 0.6);
+      --color-glass-border: rgba(139, 69, 19, 0.12);
+      --nav-bg: rgba(251, 247, 244, 0.85);
+    }
+
+    /* === LOADING SCREEN === */
+    .loader {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: var(--color-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 24px;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+    .loader.done { opacity: 0; visibility: hidden; pointer-events: none; }
+    .loader-ring {
+      width: 48px; height: 48px;
+      border: 3px solid var(--color-surface-light);
+      border-top-color: var(--color-highlight);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    .loader-text {
+      font-family: var(--font-display);
+      color: var(--color-text-muted);
+      font-size: 14px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* === BASE === */
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background: var(--color-bg);
+      color: var(--color-text-primary);
+      line-height: 1.7;
+      font-size: clamp(16px, 1.1vw, 18px);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      transition: background 0.5s ease, color 0.5s ease;
+    }
+
+    /* Noise texture overlay */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 9998;
+      pointer-events: none;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      mix-blend-mode: overlay;
+    }
+
+    a { color: var(--color-accent); text-decoration: none; transition: color 0.3s; }
+    a:hover { color: var(--color-warm); }
+
+    .container { max-width: var(--max-width); margin: 0 auto; padding: 0 clamp(16px, 4vw, 24px); }
+
+    /* === SCROLL PROGRESS === */
+    .scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--color-highlight), var(--color-accent), var(--color-warm));
+      z-index: 1001;
+      width: 0%;
+      transition: none;
+      will-change: width;
+    }
+
+    /* === NAV === */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 20px 0;
+      transition: transform 0.4s var(--transition), background 0.4s var(--transition), padding 0.4s var(--transition);
+      background: transparent;
+      will-change: transform;
+    }
+    .nav.scrolled {
+      background: var(--nav-bg);
+      backdrop-filter: blur(24px) saturate(1.4);
+      -webkit-backdrop-filter: blur(24px) saturate(1.4);
+      padding: 12px 0;
+      border-bottom: 1px solid var(--color-glass-border);
+    }
+    .nav.hidden { transform: translateY(-100%); }
+    .nav-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 clamp(16px, 4vw, 24px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--color-text-primary);
+      letter-spacing: -0.02em;
+    }
+    .nav-logo span { color: var(--color-highlight); }
+
+    .nav-right { display: flex; align-items: center; gap: 20px; }
+
+    .nav-links { display: flex; gap: 28px; list-style: none; }
+    .nav-links a {
+      color: var(--color-text-muted);
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.3s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--color-highlight);
+      transition: width 0.3s var(--transition);
+    }
+    .nav-links a:hover { color: var(--color-text-primary); }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* Theme Toggle */
+    .theme-toggle {
+      width: 40px; height: 40px;
+      border: 1px solid var(--color-glass-border);
+      border-radius: 50%;
+      background: var(--color-glass);
+      backdrop-filter: blur(10px);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      transition: all 0.3s var(--transition);
+      color: var(--color-text-primary);
+      flex-shrink: 0;
+    }
+    .theme-toggle:hover {
+      border-color: var(--color-highlight);
+      transform: scale(1.1) rotate(15deg);
+    }
+
+    /* Hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 8px;
+      z-index: 110;
+    }
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--color-text-primary);
+      transition: all 0.3s var(--transition);
+      border-radius: 2px;
+    }
+    .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+    .hamburger.active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+    /* Mobile menu */
+    .mobile-menu {
+      position: fixed;
+      inset: 0;
+      z-index: 99;
+      background: var(--nav-bg);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.4s var(--transition);
+    }
+    .mobile-menu.open { opacity: 1; visibility: visible; }
+    .mobile-menu ul { list-style: none; text-align: center; display: flex; flex-direction: column; gap: 24px; }
+    .mobile-menu a {
+      font-family: var(--font-display);
+      font-size: clamp(24px, 5vw, 36px);
+      font-weight: 600;
+      color: var(--color-text-primary);
+      transition: all 0.3s;
+      display: inline-block;
+    }
+    .mobile-menu a:hover { color: var(--color-highlight); transform: translateX(8px); }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+    }
+
+    /* === HERO === */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 120px 24px 80px;
+    }
+    #hero-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+    /* Cursor glow */
+    .cursor-glow {
+      position: fixed;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 107, 53, 0.06) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+      transform: translate(-50%, -50%);
+      transition: opacity 0.3s;
+      will-change: left, top;
+    }
+    @media (max-width: 768px) { .cursor-glow { display: none; } }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      max-width: 800px;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(255, 107, 53, 0.12);
+      border: 1px solid rgba(255, 107, 53, 0.25);
+      color: var(--color-highlight);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 20px;
+      border-radius: 100px;
+      margin-bottom: 32px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(36px, 7vw, 80px);
+      font-weight: 800;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      margin-bottom: 24px;
+    }
+    .hero h1 em {
+      font-style: italic;
+      font-weight: 600;
+      background: linear-gradient(135deg, var(--color-highlight), var(--color-accent), var(--color-warm));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: clamp(17px, 2.2vw, 22px);
+      color: var(--color-text-muted);
+      line-height: 1.6;
+      margin-bottom: 40px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Magnetic CTA */
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--color-highlight);
+      color: #fff;
+      padding: clamp(14px, 2vw, 18px) clamp(28px, 4vw, 40px);
+      border-radius: 100px;
+      font-weight: 600;
+      font-size: clamp(15px, 1.2vw, 17px);
+      transition: all 0.4s var(--transition);
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+      min-height: 48px;
+    }
+    .hero-cta::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 50%);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    .hero-cta:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 16px 48px rgba(255, 107, 53, 0.35);
+      color: #fff;
+    }
+    .hero-cta:hover::before { opacity: 1; }
+    .hero-cta:active { transform: translateY(-1px) scale(0.98); }
+
+    .hero-scroll-hint {
+      position: absolute;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1;
+      color: var(--color-text-muted);
+      font-size: 13px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      animation: float 2.5s ease-in-out infinite;
+    }
+    .hero-scroll-hint .arrow {
+      width: 20px; height: 20px;
+      border-right: 2px solid var(--color-text-muted);
+      border-bottom: 2px solid var(--color-text-muted);
+      transform: rotate(45deg);
+      animation: arrowBounce 1.5s ease-in-out infinite;
+    }
+    @keyframes float { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-10px); } }
+    @keyframes arrowBounce { 0%, 100% { transform: rotate(45deg) translateY(0); } 50% { transform: rotate(45deg) translateY(5px); } }
+
+    /* === TEXT REVEAL === */
+    .text-reveal .word {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.8s var(--transition), transform 0.8s var(--transition);
+    }
+    .text-reveal.visible .word {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* === SECTIONS === */
+    section {
+      padding: var(--spacing-section) 0;
+      position: relative;
+      transition: background 0.5s ease;
+    }
+
+    .section-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--color-highlight);
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 5vw, 56px);
+      font-weight: 700;
+      line-height: 1.12;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+    }
+    .section-title em {
+      font-style: italic;
+      background: linear-gradient(135deg, var(--color-highlight), var(--color-accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .section-subtitle {
+      font-size: clamp(16px, 1.8vw, 20px);
+      color: var(--color-text-muted);
+      line-height: 1.6;
+      max-width: 640px;
+      margin-bottom: 48px;
+    }
+
+    /* === REVEAL ANIMATION === */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s var(--transition), transform 0.8s var(--transition);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+    .reveal-delay-5 { transition-delay: 0.5s; }
+
+    /* === GLASSMORPHISM CARDS === */
+    .glass-card {
+      background: var(--color-glass);
+      backdrop-filter: blur(20px) saturate(1.2);
+      -webkit-backdrop-filter: blur(20px) saturate(1.2);
+      border: 1px solid var(--color-glass-border);
+      border-radius: var(--radius);
+      transition: all 0.4s var(--transition);
+      will-change: transform;
+    }
+    .glass-card:hover {
+      border-color: rgba(212, 149, 106, 0.25);
+      transform: translateY(-6px);
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.15);
+    }
+
+    /* 3D tilt wrapper */
+    .tilt-card {
+      perspective: 800px;
+    }
+    .tilt-card-inner {
+      transition: transform 0.4s var(--transition);
+      transform-style: preserve-3d;
+    }
+
+    /* === UPDATE CARDS === */
+    .updates-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 40px;
+    }
+    .update-card {
+      padding: 32px;
+    }
+    .update-card .icon {
+      width: 52px; height: 52px;
+      background: rgba(255, 107, 53, 0.1);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-bottom: 20px;
+      transition: transform 0.3s var(--transition);
+    }
+    .update-card:hover .icon { transform: scale(1.1) rotate(-5deg); }
+    .update-card h3 {
+      font-family: var(--font-display);
+      font-size: clamp(18px, 1.5vw, 20px);
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .update-card p {
+      color: var(--color-text-muted);
+      font-size: clamp(14px, 1vw, 15px);
+      line-height: 1.65;
+    }
+    .update-card .tag {
+      display: inline-block;
+      background: rgba(255, 107, 53, 0.1);
+      color: var(--color-highlight);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-top: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* === REVOLUTION / TIMELINE === */
+    .revolution-section { background: var(--color-bg-warm); }
+
+    .speed-compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 48px;
+    }
+    .speed-card {
+      border-radius: var(--radius);
+      padding: clamp(24px, 3vw, 36px);
+      text-align: center;
+    }
+    .speed-card.old { border-top: 3px solid var(--color-text-muted); }
+    .speed-card.new { border-top: 3px solid var(--color-highlight); }
+    .speed-card .speed-label {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 16px;
+      color: var(--color-text-muted);
+    }
+    .speed-card.new .speed-label { color: var(--color-highlight); }
+    .speed-card .speed-number {
+      font-family: var(--font-display);
+      font-size: clamp(32px, 5vw, 64px);
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    .speed-card.old .speed-number { color: var(--color-text-muted); }
+    .speed-card.new .speed-number {
+      background: linear-gradient(135deg, var(--color-highlight), var(--color-accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .speed-card .speed-desc { color: var(--color-text-muted); font-size: 15px; }
+    @media (max-width: 600px) { .speed-compare { grid-template-columns: 1fr; } }
+
+    /* Interactive timeline */
+    .timeline { position: relative; margin-top: 60px; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0; bottom: 0;
+      width: 2px;
+      background: var(--color-surface-light);
+      transform: translateX(-50%);
+    }
+    .timeline-progress {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      width: 2px;
+      height: 0%;
+      background: linear-gradient(to bottom, var(--color-highlight), var(--color-accent));
+      transform: translateX(-50%);
+      transition: height 0.3s ease;
+      z-index: 1;
+    }
+    .timeline-item {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 60px;
+      position: relative;
+    }
+    .timeline-item:nth-child(odd) { flex-direction: row; }
+    .timeline-item:nth-child(even) { flex-direction: row-reverse; }
+    .timeline-content {
+      width: 45%;
+      padding: 28px;
+      opacity: 0.4;
+      transition: all 0.6s var(--transition);
+    }
+    .timeline-content.active { opacity: 1; }
+    .timeline-dot {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%) scale(0.6);
+      width: 18px; height: 18px;
+      background: var(--color-surface-light);
+      border-radius: 50%;
+      border: 3px solid var(--color-bg-warm);
+      z-index: 2;
+      transition: all 0.4s var(--transition);
+    }
+    .timeline-dot.active {
+      background: var(--color-highlight);
+      transform: translateX(-50%) scale(1);
+      box-shadow: 0 0 20px rgba(255, 107, 53, 0.4);
+    }
+    .timeline-year {
+      font-family: var(--font-display);
+      font-size: clamp(22px, 3vw, 28px);
+      font-weight: 800;
+      color: var(--color-accent);
+      margin-bottom: 8px;
+    }
+    .timeline-content h3 {
+      font-family: var(--font-display);
+      font-size: clamp(16px, 1.3vw, 18px);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .timeline-content p { color: var(--color-text-muted); font-size: 15px; line-height: 1.6; }
+
+    @media (max-width: 768px) {
+      .timeline::before, .timeline-progress { left: 20px; }
+      .timeline-item, .timeline-item:nth-child(even) { flex-direction: row; padding-left: 50px; }
+      .timeline-content { width: 100%; }
+      .timeline-dot { left: 20px; }
+    }
+
+    /* === JOB IMPACT === */
+    .job-section { background: var(--color-bg); }
+    .impact-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 48px;
+    }
+    .stat-card {
+      text-align: center;
+      padding: clamp(24px, 3vw, 36px) 20px;
+    }
+    .stat-number {
+      font-family: var(--font-display);
+      font-size: clamp(32px, 4.5vw, 52px);
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--color-highlight), var(--color-accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+    .stat-label { color: var(--color-text-muted); font-size: clamp(13px, 1vw, 14px); line-height: 1.5; }
+    @media (max-width: 600px) { .impact-stats { grid-template-columns: 1fr; } }
+
+    .job-examples { margin-top: 48px; }
+    .job-row {
+      display: flex;
+      align-items: center;
+      gap: clamp(12px, 2vw, 20px);
+      padding: 16px 0;
+      border-bottom: 1px solid var(--color-glass-border);
+      transition: background 0.3s;
+    }
+    .job-row:hover { background: rgba(255, 107, 53, 0.03); }
+    .job-name { flex: 1; font-weight: 500; font-size: clamp(14px, 1.1vw, 16px); min-width: 0; }
+    .job-bar-wrap {
+      flex: 2;
+      height: 8px;
+      background: var(--color-surface-light);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+    .job-bar {
+      height: 100%;
+      border-radius: 100px;
+      transition: width 1.5s var(--transition);
+      width: 0%;
+    }
+    .job-bar.high { background: linear-gradient(90deg, var(--color-danger), #ff6666); }
+    .job-bar.medium { background: linear-gradient(90deg, var(--color-accent), var(--color-warm)); }
+    .job-bar.low { background: linear-gradient(90deg, var(--color-success), #66bb6a); }
+    .job-risk { min-width: 48px; text-align: right; font-weight: 700; font-size: 14px; }
+    .job-risk.high { color: var(--color-danger); }
+    .job-risk.medium { color: var(--color-accent); }
+    .job-risk.low { color: var(--color-success); }
+
+    /* Skeleton loader for chart */
+    .chart-container {
+      max-width: 600px;
+      margin: 48px auto 0;
+      padding: 24px;
+      border-radius: var(--radius);
+      position: relative;
+      min-height: 280px;
+    }
+    .skeleton-loader {
+      position: absolute;
+      inset: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+    .skeleton-loader.hidden { display: none; }
+    .skeleton-bar {
+      height: 20px;
+      background: linear-gradient(90deg, var(--color-surface-light) 25%, var(--color-surface) 50%, var(--color-surface-light) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 4px;
+    }
+    .skeleton-bar:nth-child(1) { width: 30%; }
+    .skeleton-bar:nth-child(2) { width: 50%; }
+    .skeleton-bar:nth-child(3) { width: 70%; }
+    .skeleton-bar:nth-child(4) { width: 90%; }
+    .skeleton-bar:nth-child(5) { width: 60%; }
+    @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+
+    /* === CALLOUT / ZWISCHENRUF === */
+    .callout {
+      background: var(--color-glass);
+      backdrop-filter: blur(16px) saturate(1.2);
+      -webkit-backdrop-filter: blur(16px) saturate(1.2);
+      border: 1px solid var(--color-glass-border);
+      border-left: 3px solid var(--color-highlight);
+      border-radius: var(--radius);
+      padding: clamp(20px, 2.5vw, 28px) clamp(20px, 3vw, 32px);
+      margin: clamp(32px, 4vw, 48px) 0;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      font-size: clamp(14px, 1.1vw, 16px);
+      color: var(--color-text-warm);
+      line-height: 1.65;
+      font-style: italic;
+      transition: all 0.3s var(--transition);
+    }
+    .callout:hover { border-color: rgba(212, 149, 106, 0.25); transform: translateX(4px); }
+    .callout-icon { font-size: 24px; flex-shrink: 0; line-height: 1; margin-top: 2px; }
+    .callout p { margin: 0; }
+
+    .sub-heading {
+      font-family: var(--font-display);
+      font-size: clamp(20px, 2.5vw, 28px);
+      font-weight: 700;
+      margin-bottom: 16px;
+      margin-top: clamp(48px, 6vw, 80px);
+    }
+    .sub-intro { color: var(--color-text-muted); font-size: 15px; line-height: 1.7; margin-bottom: 32px; max-width: 700px; }
+
+    .impact-list { list-style: none; margin: 24px 0; display: flex; flex-direction: column; gap: 12px; }
+    .impact-list li {
+      background: var(--color-glass);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--color-glass-border);
+      border-radius: var(--radius-sm);
+      padding: 16px 20px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--color-text-muted);
+      transition: all 0.3s var(--transition);
+    }
+    .impact-list li:hover { border-color: rgba(212,149,106,0.2); transform: translateX(4px); background: rgba(255,107,53,0.04); }
+    .impact-list li strong { color: var(--color-text-primary); font-weight: 600; }
+    .impact-list .li-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+
+    .footnotes { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--color-glass-border); }
+    .footnotes h4 { font-family: var(--font-display); font-size: 16px; font-weight: 600; color: var(--color-text-warm); margin-bottom: 16px; }
+    .footnotes ol { list-style: decimal; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; }
+    .footnotes li { font-size: 12px; color: var(--color-text-muted); line-height: 1.6; }
+    .footnotes a { color: var(--color-accent); word-break: break-all; }
+    sup a { color: var(--color-highlight); font-weight: 700; font-size: 11px; text-decoration: none; }
+    sup a:hover { text-decoration: underline; }
+
+    /* === THREAT TABLE === */
+    .threat-table { margin-top: 8px; }
+    .threat-row {
+      display: flex;
+      align-items: center;
+      gap: clamp(12px, 2vw, 20px);
+      padding: 14px 0;
+      border-bottom: 1px solid var(--color-glass-border);
+      transition: background 0.3s;
+    }
+    .threat-row:hover { background: rgba(255, 107, 53, 0.03); }
+    .threat-info { flex: 1.2; min-width: 0; }
+    .threat-name { display: block; font-weight: 600; font-size: clamp(14px, 1.1vw, 16px); }
+    .threat-detail { display: block; font-size: 12px; color: var(--color-text-muted); margin-top: 2px; }
+    .threat-bar-wrap {
+      flex: 2;
+      height: 10px;
+      background: var(--color-surface-light);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+    .threat-bar {
+      height: 100%;
+      border-radius: 100px;
+      width: 0%;
+      transition: width 1.8s var(--transition);
+    }
+    .threat-num {
+      min-width: clamp(60px, 8vw, 80px);
+      text-align: right;
+      font-weight: 700;
+      font-size: clamp(12px, 1vw, 14px);
+      font-family: var(--font-display);
+      flex-shrink: 0;
+    }
+    @media (max-width: 480px) {
+      .threat-row { flex-wrap: wrap; }
+      .threat-info { flex: 1 0 100%; margin-bottom: 8px; }
+      .threat-bar-wrap { flex: 1; }
+    }
+
+    /* === DAILY SECTION === */
+    .daily-section { background: var(--color-bg-warm); }
+    .daily-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+      margin-top: 48px;
+    }
+    .daily-card { padding: 32px; }
+    .daily-emoji {
+      font-size: 36px;
+      margin-bottom: 16px;
+      display: inline-block;
+      transition: transform 0.3s var(--transition);
+    }
+    .daily-card:hover .daily-emoji { transform: scale(1.2) rotate(-8deg); }
+    .daily-card h3 {
+      font-family: var(--font-display);
+      font-size: clamp(17px, 1.3vw, 18px);
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .daily-card .before-after {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--color-glass-border);
+    }
+    .daily-card .ba-row { display: flex; gap: 12px; margin-bottom: 8px; font-size: 14px; line-height: 1.5; }
+    .ba-label {
+      font-weight: 700;
+      min-width: 55px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding-top: 2px;
+      flex-shrink: 0;
+    }
+    .ba-label.before { color: var(--color-text-muted); }
+    .ba-label.after { color: var(--color-highlight); }
+    .ba-text { color: var(--color-text-muted); }
+
+    /* === OUTLOOK === */
+    .outlook-timeline { margin-top: 48px; position: relative; }
+    .outlook-item {
+      display: flex;
+      gap: clamp(16px, 3vw, 32px);
+      margin-bottom: 40px;
+      align-items: flex-start;
+    }
+    .outlook-time {
+      min-width: clamp(90px, 10vw, 120px);
+      font-family: var(--font-display);
+      font-size: clamp(18px, 2vw, 22px);
+      font-weight: 700;
+      color: var(--color-accent);
+      padding-top: 4px;
+      flex-shrink: 0;
+    }
+    .outlook-content {
+      padding: 28px;
+      flex: 1;
+    }
+    .outlook-content h3 {
+      font-family: var(--font-display);
+      font-size: clamp(16px, 1.3vw, 18px);
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .outlook-content p { color: var(--color-text-muted); font-size: 15px; line-height: 1.6; }
+    @media (max-width: 600px) {
+      .outlook-item { flex-direction: column; gap: 12px; }
+      .outlook-time { min-width: auto; }
+    }
+
+    /* === ACTION === */
+    .action-section { background: linear-gradient(to bottom, var(--color-bg), var(--color-bg-warm)); }
+    .action-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 48px;
+    }
+    .action-card {
+      padding: 36px;
+      position: relative;
+      overflow: hidden;
+    }
+    .action-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--color-highlight), var(--color-accent));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.6s var(--transition);
+    }
+    .action-card:hover::before { transform: scaleX(1); }
+    .action-number {
+      font-family: var(--font-display);
+      font-size: 48px;
+      font-weight: 800;
+      background: linear-gradient(135deg, rgba(255,107,53,0.15), rgba(212,149,106,0.08));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 12px;
+    }
+    .action-card h3 {
+      font-family: var(--font-display);
+      font-size: clamp(18px, 1.4vw, 20px);
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .action-card p { color: var(--color-text-muted); font-size: 15px; line-height: 1.6; }
+
+    /* === FINAL CTA === */
+    .final-cta {
+      text-align: center;
+      padding: var(--spacing-section) 24px;
+      background: var(--color-bg-warm);
+      position: relative;
+      overflow: hidden;
+    }
+    .final-cta::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(255, 107, 53, 0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .final-cta .section-title { margin-bottom: 16px; }
+    .final-cta .section-subtitle { margin-left: auto; margin-right: auto; margin-bottom: 36px; }
+
+    /* === QUOTE === */
+    .quote-section {
+      text-align: center;
+      padding: clamp(60px, 8vw, 100px) 24px;
+      border-top: 1px solid var(--color-glass-border);
+      border-bottom: 1px solid var(--color-glass-border);
+    }
+    .quote-text {
+      font-family: var(--font-display);
+      font-size: clamp(20px, 3.2vw, 34px);
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1.4;
+      color: var(--color-text-warm);
+      max-width: 700px;
+      margin: 0 auto 20px;
+    }
+    .quote-author { color: var(--color-text-muted); font-size: 14px; }
+
+    /* === FOOTER === */
+    footer {
+      padding: 40px 24px;
+      text-align: center;
+      border-top: 1px solid var(--color-glass-border);
+    }
+    footer p { color: var(--color-text-muted); font-size: 13px; }
+    footer a { color: var(--color-accent); }
+
+    /* === GLOW DIVIDER === */
+    .glow-divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
+      opacity: 0.3;
+    }
+
+    /* === BACK TO TOP === */
+    .back-to-top {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: var(--color-glass);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--color-glass-border);
+      color: var(--color-text-primary);
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 90;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.4s var(--transition);
+      pointer-events: none;
+    }
+    .back-to-top.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: all;
+    }
+    .back-to-top:hover {
+      background: var(--color-highlight);
+      border-color: var(--color-highlight);
+      color: #fff;
+      transform: translateY(-4px);
+    }
+
+    @media (max-width: 768px) {
+      .back-to-top { bottom: 20px; right: 20px; width: 44px; height: 44px; }
+    }
+
+    /* === SHARE FAB === */
+    .share-fab {
+      position: fixed;
+      bottom: 32px;
+      left: 32px;
+      z-index: 99;
+      display: flex;
+      flex-direction: column-reverse;
+      align-items: center;
+      gap: 8px;
+    }
+    .share-fab-btn {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      border: 1px solid var(--color-glass-border);
+      background: var(--color-glass);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      color: var(--color-text-primary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s var(--transition);
+    }
+    .share-fab-btn:hover {
+      background: var(--color-highlight);
+      border-color: var(--color-highlight);
+      color: #fff;
+      transform: scale(1.1);
+    }
+    .share-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: all 0.3s var(--transition);
+    }
+    .share-menu.open {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: all;
+    }
+    .share-option {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: var(--color-surface);
+      border: 1px solid var(--color-glass-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      transition: all 0.3s var(--transition);
+    }
+    .share-option:hover {
+      background: var(--color-surface-light);
+      color: var(--color-text-primary);
+      transform: scale(1.1);
+    }
+    @media (max-width: 768px) {
+      .share-fab { bottom: 20px; left: 20px; }
+      .share-fab-btn { width: 44px; height: 44px; }
+      .share-option { width: 40px; height: 40px; }
+    }
+
+    /* === SELECTION === */
+    ::selection { background: rgba(255, 107, 53, 0.3); color: var(--color-text-primary); }
+
+    /* === COUNTER === */
+    .counter { display: inline-block; }
+
+    /* === SECTION COLOR TRANSITIONS === */
+    section, .revolution-section, .daily-section, .action-section, .final-cta, .quote-section, footer {
+      transition: background 0.5s ease;
+    }
+
+    /* === ASI SCENARIO CARDS === */
+    .scenario-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 40px;
+    }
+    .scenario-card {
+      padding: clamp(28px, 3vw, 40px);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      cursor: default;
+    }
+    .scenario-card .scenario-icon { font-size: 48px; margin-bottom: 16px; display: block; }
+    .scenario-card h3 { font-family: var(--font-display); font-size: clamp(20px, 1.8vw, 24px); font-weight: 700; margin-bottom: 8px; }
+    .scenario-card .scenario-subtitle { font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; margin-bottom: 16px; }
+    .scenario-card p { color: var(--color-text-muted); font-size: 15px; line-height: 1.65; }
+    .scenario-card.daddy { border-top: 3px solid var(--color-success); }
+    .scenario-card.daddy .scenario-subtitle { color: var(--color-success); }
+    .scenario-card.gott { border-top: 3px solid var(--color-accent); }
+    .scenario-card.gott .scenario-subtitle { color: var(--color-accent); }
+    .scenario-card.skynet { border-top: 3px solid var(--color-danger); }
+    .scenario-card.skynet .scenario-subtitle { color: var(--color-danger); }
+
+    /* === PROGNOSIS TABLE === */
+    .prognosis-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin-top: 32px;
+      font-size: clamp(13px, 1vw, 15px);
+    }
+    .prognosis-table th {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--color-highlight);
+      text-align: left;
+      padding: 12px 16px;
+      border-bottom: 2px solid var(--color-glass-border);
+      background: var(--color-glass);
+    }
+    .prognosis-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--color-glass-border);
+      color: var(--color-text-muted);
+      transition: background 0.2s;
+      vertical-align: top;
+    }
+    .prognosis-table tr:hover td { background: rgba(255, 107, 53, 0.03); }
+    .prognosis-table .source-name { color: var(--color-text-primary); font-weight: 600; white-space: nowrap; }
+    .prognosis-table .highlight-cell { color: var(--color-highlight); font-weight: 700; }
+    @media (max-width: 600px) {
+      .prognosis-table { font-size: 12px; }
+      .prognosis-table td, .prognosis-table th { padding: 10px 8px; }
+      .prognosis-table .source-name { white-space: normal; }
+    }
+
+    /* === EPIC QUOTE === */
+    .epic-quote {
+      font-family: var(--font-display);
+      font-size: clamp(24px, 4vw, 48px);
+      font-weight: 800;
+      line-height: 1.15;
+      text-align: center;
+      letter-spacing: -0.02em;
+      padding: clamp(60px, 8vw, 120px) 0;
+    }
+    .epic-quote span {
+      background: linear-gradient(135deg, var(--color-highlight), var(--color-accent), var(--color-warm));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* === GLOBAL FOCUS STATES === */
+    a:focus-visible, button:focus-visible {
+      outline: 2px solid var(--color-highlight);
+      outline-offset: 4px;
+      border-radius: 4px;
+    }
+
+    /* === TOUCH TARGET SAFETY === */
+    @media (max-width: 768px) {
+      .nav-links a, .mobile-menu a, .hero-cta, .theme-toggle, .back-to-top, .hamburger {
+        min-height: 44px;
+        min-width: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+
+    /* === REDUCED MOTION === */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+      .reveal { opacity: 1; transform: none; }
+      .text-reveal .word { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Loading Screen -->
+  <div class="loader" id="loader">
+    <div class="loader-ring"></div>
+    <div class="loader-text">Lade...</div>
+  </div>
+
+  <!-- Cursor Glow -->
+  <div class="cursor-glow" id="cursorGlow"></div>
+
+  <!-- Scroll Progress -->
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <!-- Nav -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <div class="nav-logo">arbeitlos<span>.</span>ticket</div>
+      <div class="nav-right">
+        <ul class="nav-links">
+          <li><a href="#was-passiert">Was passiert</a></li>
+          <li><a href="#revolution">Warum anders</a></li>
+          <li><a href="#jobs">Dein Job</a></li>
+          <li><a href="#deep-dive">Deep Dive</a></li>
+          <li><a href="#alltag">Dein Alltag</a></li>
+          <li><a href="#handeln">Handeln</a></li>
+        </ul>
+        <button class="theme-toggle" id="themeToggle" aria-label="Theme umschalten">&#9790;</button>
+        <button class="hamburger" id="hamburger" aria-label="Menü öffnen">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <ul>
+      <li><a href="#was-passiert">Was passiert</a></li>
+      <li><a href="#revolution">Warum anders</a></li>
+      <li><a href="#jobs">Dein Job</a></li>
+      <li><a href="#deep-dive">Deep Dive</a></li>
+      <li><a href="#alltag">Dein Alltag</a></li>
+      <li><a href="#handeln">Handeln</a></li>
+    </ul>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <canvas id="hero-canvas"></canvas>
+    <div class="hero-content">
+      <div class="hero-badge reveal">Stand: März 2026</div>
+      <h1 class="reveal text-reveal">Die Welt verändert sich.<br><em>Schneller als du denkst.</em></h1>
+      <p class="hero-sub reveal">Du wolltest wissen, was gerade passiert. Hier ist die ehrliche Antwort — ohne Fachchinesisch, ohne Hype. Nur das, was du wissen musst.</p>
+      <a href="#was-passiert" class="hero-cta reveal magnetic-btn">
+        Zeig mir, was los ist
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+      </a>
+    </div>
+    <div class="hero-scroll-hint">
+      <span>Scroll runter</span>
+      <div class="arrow"></div>
+    </div>
+  </section>
+
+  <!-- SECTION 1: WAS PASSIERT GERADE -->
+  <section id="was-passiert">
+    <div class="container">
+      <div class="section-label reveal">Kapitel 1</div>
+      <h2 class="section-title reveal">Was passiert gerade?</h2>
+      <p class="section-subtitle reveal">Allein in den letzten Wochen hat sich mehr verändert als in den letzten 5 Jahren zusammen. Hier sind die wichtigsten Dinge — in einfachen Worten.</p>
+
+      <div class="callout reveal" style="margin-bottom: 40px;">
+        <span class="callout-icon">&#129302;</span>
+        <p>Du hast auf „Zeig mir, was los ist" geklickt und bist jetzt offiziell in der Zukunft gelandet. Aber keine Sorge — du kannst jederzeit zurück. Ist ja nicht weit. Du hättest das Mausrad nicht mal eine ganze Drehung machen müssen. &#129323; Aber naja… du bist jetzt hier. Also weiter im Text.</p>
+      </div>
+
+      <div class="updates-grid">
+        <div class="update-card glass-card tilt-card reveal reveal-delay-1">
+          <div class="icon">&#129504;</div>
+          <h3>AI kann jetzt ganze Bücher lesen</h3>
+          <p>Stell dir vor, du gibst jemandem ein 700-Seiten-Buch und er hat es in 3 Sekunden komplett gelesen UND verstanden. Claude kann jetzt 1 Million Wörter auf einmal verarbeiten. Das ist wie 10 Harry-Potter-Bände gleichzeitig.</p>
+          <span class="tag">Neu: März 2026</span>
+        </div>
+
+        <div class="update-card glass-card tilt-card reveal reveal-delay-2">
+          <div class="icon">&#128483;&#65039;</div>
+          <h3>Du kannst jetzt mit AI sprechen</h3>
+          <p>Keine Tipps mehr nötig. Du drückst eine Taste, redest einfach los — und die AI versteht dich. Wie ein Telefonat mit jemandem, der alles weiß. Voice Mode ist gerade in der Ausrollung.</p>
+          <span class="tag">Neu: März 2026</span>
+        </div>
+
+        <div class="update-card glass-card tilt-card reveal reveal-delay-3">
+          <div class="icon">&#128188;</div>
+          <h3>AI als digitaler Kollege</h3>
+          <p>Claude „Cowork" kann jetzt eigenständig Aufgaben auf deinem Computer erledigen. Dokumente erstellen, Dateien sortieren, E-Mails vorbereiten, Tabellen auswerten — wie ein unsichtbarer Bürokollege, der niemals schläft.</p>
+          <span class="tag">Cowork</span>
+        </div>
+
+        <div class="update-card glass-card tilt-card reveal reveal-delay-1">
+          <div class="icon">&#128274;</div>
+          <h3>AI findet Sicherheitslücken</h3>
+          <p>Claude hat in nur 2 Wochen 22 echte Sicherheitsprobleme in Firefox gefunden — dem Browser, den Millionen Menschen benutzen. 14 davon waren schwerwiegend. AI wird zum Sicherheitsexperten.</p>
+          <span class="tag">Sicherheit</span>
+        </div>
+
+        <div class="update-card glass-card tilt-card reveal reveal-delay-2">
+          <div class="icon">&#128202;</div>
+          <h3>AI macht jetzt Grafiken und Charts</h3>
+          <p>Statt nur Text zu liefern, kann Claude jetzt Diagramme, Charts und Visualisierungen direkt in der Antwort erstellen. Sag einfach „Zeig mir das als Grafik" — und es passiert.</p>
+          <span class="tag">Visualisierung</span>
+        </div>
+
+        <div class="update-card glass-card tilt-card reveal reveal-delay-3">
+          <div class="icon">&#128241;</div>
+          <h3>Dispatch: AI arbeitet weiter, auch wenn du weg bist</h3>
+          <p>Du gibst deiner AI eine Aufgabe, gehst zum Einkaufen, und wenn du zurückkommst, ist alles fertig. Du kannst sogar vom Handy aus nachschauen, was sie gerade macht. Seit 17. März 2026 live.</p>
+          <span class="tag">Dispatch</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-divider"></div>
+
+  <!-- SECTION 2: WARUM IST DAS ANDERS -->
+  <section id="revolution" class="revolution-section">
+    <div class="container">
+      <div class="section-label reveal">Kapitel 2</div>
+      <h2 class="section-title reveal">Warum ist das anders<br>als alles davor?</h2>
+      <p class="section-subtitle reveal">Jede große Revolution hat die Welt auf den Kopf gestellt. Aber keine war so schnell wie diese.</p>
+
+      <div class="speed-compare reveal">
+        <div class="speed-card glass-card old">
+          <div class="speed-label">Industrielle Revolution</div>
+          <div class="speed-number">~100 Jahre</div>
+          <p class="speed-desc">Von der Dampfmaschine bis zur Fabrikarbeit hat es Generationen gedauert</p>
+        </div>
+        <div class="speed-card glass-card new">
+          <div class="speed-label">AI-Revolution</div>
+          <div class="speed-number">~5 Jahre</div>
+          <p class="speed-desc">Von „AI kann kaum reden" bis „AI ersetzt ganze Abteilungen" — in einem Bruchteil der Zeit</p>
+        </div>
+      </div>
+
+      <div class="timeline reveal" id="interactiveTimeline">
+        <div class="timeline-progress" id="timelineProgress"></div>
+        <div class="timeline-item">
+          <div class="timeline-content glass-card">
+            <div class="timeline-year">1760</div>
+            <h3>Dampfmaschine</h3>
+            <p>Maschinen übernahmen körperliche Arbeit. Handwerker verloren ihre Jobs. Neue Fabriken entstanden. Die Gesellschaft brauchte 100 Jahre, um sich anzupassen.</p>
+          </div>
+          <div class="timeline-dot"></div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-content glass-card">
+            <div class="timeline-year">1990</div>
+            <h3>Internet</h3>
+            <p>Information wurde frei verfügbar. Reisebüros, Videotheken, Zeitungen — ganze Branchen verschwanden. Neue entstanden. Die Anpassung dauerte ~20 Jahre.</p>
+          </div>
+          <div class="timeline-dot"></div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-content glass-card">
+            <div class="timeline-year">2007</div>
+            <h3>Smartphone</h3>
+            <p>Jeder hatte plötzlich einen Computer in der Tasche. Taxifahrer, Hoteliers, Fotografen — alles wurde umgekrempelt. Anpassung: ~10 Jahre.</p>
+          </div>
+          <div class="timeline-dot"></div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-content glass-card">
+            <div class="timeline-year">2024–26</div>
+            <h3>AI-Revolution</h3>
+            <p>Maschinen übernehmen jetzt DENKARBEIT. Texte schreiben, Daten analysieren, Code programmieren, Bilder erstellen, Strategien entwickeln. Die Anpassungszeit? Monate, nicht Jahre.</p>
+          </div>
+          <div class="timeline-dot"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-divider"></div>
+
+  <!-- QUOTE -->
+  <div class="quote-section">
+    <div class="container">
+      <p class="quote-text reveal">Der Unterschied zu früheren Revolutionen: Diesmal betrifft es nicht die Hände. Es betrifft den Kopf.</p>
+      <p class="quote-author reveal">— Die unbequeme Wahrheit über AI</p>
+    </div>
+  </div>
+
+  <!-- SECTION 3: JOBS -->
+  <section id="jobs" class="job-section">
+    <div class="container">
+      <div class="section-label reveal">Kapitel 3</div>
+      <h2 class="section-title reveal">Was bedeutet das<br>für deinen Job?</h2>
+      <p class="section-subtitle reveal">Nicht jeder Job ist gleich betroffen. Aber die Zahlen sind ziemlich eindeutig — und betreffen nicht nur „Computer-Jobs".</p>
+
+      <div class="impact-stats">
+        <div class="stat-card glass-card reveal reveal-delay-1">
+          <div class="stat-number"><span class="counter" data-target="85">0</span> Mio.</div>
+          <div class="stat-label">Jobs werden laut World Economic Forum durch AI ersetzt</div>
+        </div>
+        <div class="stat-card glass-card reveal reveal-delay-2">
+          <div class="stat-number"><span class="counter" data-target="40">0</span>%</div>
+          <div class="stat-label">aller weltweiten Jobs sind von AI-Veränderungen betroffen</div>
+        </div>
+        <div class="stat-card glass-card reveal reveal-delay-3">
+          <div class="stat-number"><span class="counter" data-target="86">0</span>%</div>
+          <div class="stat-label">der am stärksten betroffenen Arbeitnehmer sind Frauen</div>
+        </div>
+      </div>
+
+      <div class="job-examples reveal">
+        <h3 style="font-family: var(--font-display); font-size: clamp(18px, 2vw, 22px); margin-bottom: 24px; font-weight: 600;">Wie stark ist dein Bereich betroffen?</h3>
+        <div class="job-row">
+          <div class="job-name">Kundenservice / Call Center</div>
+          <div class="job-bar-wrap"><div class="job-bar high" data-width="80"></div></div>
+          <div class="job-risk high">80%</div>
+        </div>
+        <div class="job-row">
+          <div class="job-name">Dateneingabe / Verwaltung</div>
+          <div class="job-bar-wrap"><div class="job-bar high" data-width="75"></div></div>
+          <div class="job-risk high">75%</div>
+        </div>
+        <div class="job-row">
+          <div class="job-name">Buchhaltung / Finanzen</div>
+          <div class="job-bar-wrap"><div class="job-bar high" data-width="65"></div></div>
+          <div class="job-risk high">65%</div>
+        </div>
+        <div class="job-row">
+          <div class="job-name">Marketing / Texterstellung</div>
+          <div class="job-bar-wrap"><div class="job-bar medium" data-width="55"></div></div>
+          <div class="job-risk medium">55%</div>
+        </div>
+        <div class="job-row">
+          <div class="job-name">Rechtsberatung / Paralegals</div>
+          <div class="job-bar-wrap"><div class="job-bar medium" data-width="50"></div></div>
+          <div class="job-risk medium">50%</div>
+        </div>
+        <div class="job-row">
+          <div class="job-name">Handwerk / Pflege</div>
+          <div class="job-bar-wrap"><div class="job-bar low" data-width="15"></div></div>
+          <div class="job-risk low">15%</div>
+        </div>
+        <div class="job-row">
+          <div class="job-name">Kreative Führung / Strategie</div>
+          <div class="job-bar-wrap"><div class="job-bar low" data-width="10"></div></div>
+          <div class="job-risk low">10%</div>
+        </div>
+      </div>
+
+      <div class="chart-container glass-card reveal">
+        <div class="skeleton-loader" id="chartSkeleton">
+          <div class="skeleton-bar"></div>
+          <div class="skeleton-bar"></div>
+          <div class="skeleton-bar"></div>
+          <div class="skeleton-bar"></div>
+          <div class="skeleton-bar"></div>
+        </div>
+        <canvas id="jobChart"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-divider"></div>
+
+  <!-- DEEP DIVE: Branchen im Detail -->
+  <section id="deep-dive" class="revolution-section">
+    <div class="container">
+      <div class="section-label reveal">Deep Dive</div>
+      <h2 class="section-title reveal">Welche Branchen<br>trifft es <em>wirklich</em>?</h2>
+      <p class="section-subtitle reveal">Keine Schätzungen, keine Prognosen — echte Zahlen aus 2025/2026. Hier siehst du, was bereits passiert.</p>
+
+      <!-- Branchenübersicht Cards -->
+      <div class="updates-grid">
+        <div class="update-card glass-card tilt-card reveal reveal-delay-1">
+          <div class="icon">&#128196;</div>
+          <h3>Verwaltung & Sachbearbeitung</h3>
+          <p>303.230 Datenerfasser-Stellen in Deutschland sind direkt betroffen. Goldman Sachs nutzt bereits Claude für automatisierte Buchhaltung und Client-Onboarding — Arbeit, die vorher Teams brauchte.</p>
+          <span class="tag">303.230 Stellen</span>
+        </div>
+        <div class="update-card glass-card tilt-card reveal reveal-delay-2">
+          <div class="icon">&#128222;</div>
+          <h3>Kundenservice & Callcenter</h3>
+          <p>120.000 Call-Center-Stellen fallen allein in Deutschland weg. Allianz Partners hat bereits 1.500–1.800 Mitarbeiter durch KI-Systeme ersetzt. Der Trend beschleunigt sich 2026.</p>
+          <span class="tag">120.000 Stellen</span>
+        </div>
+        <div class="update-card glass-card tilt-card reveal reveal-delay-3">
+          <div class="icon">&#128187;</div>
+          <h3>Software & IT</h3>
+          <p>15–27% der IT-Unternehmen bauen bereits Stellen ab. Anthropic-CEO Dario Amodei sagt: KI übernimmt die Mehrheit der Software-Engineering-Aufgaben in 6–12 Monaten. Bei Anthropic selbst: 70–90% des Codes wird bereits von KI generiert.</p>
+          <span class="tag">70-90% KI-Code</span>
+        </div>
+        <div class="update-card glass-card tilt-card reveal reveal-delay-1">
+          <div class="icon">&#9881;&#65039;</div>
+          <h3>Industrie & Maschinenbau</h3>
+          <p>37,3% der Industrieunternehmen rechnen mit Personalabbau durch KI. Gleichzeitig setzen 43% der Maschinenbauer bereits produktiv KI ein — die Transformation läuft schon.</p>
+          <span class="tag">37,3% Abbau</span>
+        </div>
+      </div>
+
+      <!-- Interaktive Bedrohungstabelle -->
+      <div class="reveal" style="margin-top: clamp(48px, 6vw, 80px);">
+        <h3 style="font-family: var(--font-display); font-size: clamp(20px, 2.5vw, 28px); margin-bottom: 12px; font-weight: 700;">Die am stärksten bedrohten Berufe</h3>
+        <p style="color: var(--color-text-muted); font-size: 15px; margin-bottom: 32px;">Echte Zahlen, echte Stellen. Je länger der Balken, desto stärker betroffen.</p>
+
+        <div class="threat-table" id="threatTable">
+          <div class="threat-row reveal">
+            <div class="threat-info">
+              <span class="threat-name">Fachlageristen</span>
+              <span class="threat-detail">Automatisierung & Robotik</span>
+            </div>
+            <div class="threat-bar-wrap"><div class="threat-bar" data-width="100" style="background: linear-gradient(90deg, var(--color-danger), #ff6666);"></div></div>
+            <span class="threat-num" style="color: var(--color-danger);">~660.800</span>
+          </div>
+          <div class="threat-row reveal">
+            <div class="threat-info">
+              <span class="threat-name">Datenerfasser</span>
+              <span class="threat-detail">KI-Verarbeitung</span>
+            </div>
+            <div class="threat-bar-wrap"><div class="threat-bar" data-width="46" style="background: linear-gradient(90deg, var(--color-danger), #ff6666);"></div></div>
+            <span class="threat-num" style="color: var(--color-danger);">~303.230</span>
+          </div>
+          <div class="threat-row reveal">
+            <div class="threat-info">
+              <span class="threat-name">Telemarketing</span>
+              <span class="threat-detail">Voice-AI & Chatbots</span>
+            </div>
+            <div class="threat-bar-wrap"><div class="threat-bar" data-width="29" style="background: linear-gradient(90deg, var(--color-highlight), var(--color-accent));"></div></div>
+            <span class="threat-num" style="color: var(--color-highlight);">~190.280</span>
+          </div>
+          <div class="threat-row reveal">
+            <div class="threat-info">
+              <span class="threat-name">Call-Center-Agents</span>
+              <span class="threat-detail">Conversational AI</span>
+            </div>
+            <div class="threat-bar-wrap"><div class="threat-bar" data-width="18" style="background: linear-gradient(90deg, var(--color-highlight), var(--color-accent));"></div></div>
+            <span class="threat-num" style="color: var(--color-highlight);">~120.000</span>
+          </div>
+          <div class="threat-row reveal">
+            <div class="threat-info">
+              <span class="threat-name">Dolmetscher</span>
+              <span class="threat-detail">Risiko-Score: 0,49</span>
+            </div>
+            <div class="threat-bar-wrap"><div class="threat-bar" data-width="49" style="background: linear-gradient(90deg, var(--color-accent), var(--color-warm));"></div></div>
+            <span class="threat-num" style="color: var(--color-accent);">Score 0,49</span>
+          </div>
+          <div class="threat-row reveal">
+            <div class="threat-info">
+              <span class="threat-name">Historiker & Journalisten</span>
+              <span class="threat-detail">Risiko-Score: 0,48</span>
+            </div>
+            <div class="threat-bar-wrap"><div class="threat-bar" data-width="48" style="background: linear-gradient(90deg, var(--color-accent), var(--color-warm));"></div></div>
+            <span class="threat-num" style="color: var(--color-accent);">Score 0,48</span>
+          </div>
+          <div class="threat-row reveal">
+            <div class="threat-info">
+              <span class="threat-name">Buchhalter</span>
+              <span class="threat-detail">Goldman Sachs nutzt bereits KI</span>
+            </div>
+            <div class="threat-bar-wrap"><div class="threat-bar" data-width="65" style="background: linear-gradient(90deg, var(--color-danger), var(--color-highlight));"></div></div>
+            <span class="threat-num" style="color: var(--color-danger);">Hoch</span>
+          </div>
+          <div class="threat-row reveal">
+            <div class="threat-info">
+              <span class="threat-name">Junior-Programmierer</span>
+              <span class="threat-detail">15–27% IT-Firmen bauen ab</span>
+            </div>
+            <div class="threat-bar-wrap"><div class="threat-bar" data-width="27" style="background: linear-gradient(90deg, var(--color-highlight), var(--color-accent));"></div></div>
+            <span class="threat-num" style="color: var(--color-highlight);">15–27%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gewinner vs Verlierer -->
+      <div class="speed-compare reveal" style="margin-top: clamp(48px, 6vw, 80px);">
+        <div class="speed-card glass-card" style="border-top: 3px solid var(--color-success);">
+          <div class="speed-label" style="color: var(--color-success);">&#10003; Gewinner</div>
+          <div style="text-align: left; margin-top: 16px;">
+            <p style="color: var(--color-text-primary); margin-bottom: 12px; font-weight: 600;">Pflege, Therapie, Handwerk</p>
+            <p style="color: var(--color-text-muted); font-size: 15px; line-height: 1.6;">Berufe mit physischer Präsenz, Empathie und komplexer Motorik. KI kann hier unterstützen, aber nicht ersetzen. Die Nachfrage steigt sogar.</p>
+          </div>
+        </div>
+        <div class="speed-card glass-card" style="border-top: 3px solid var(--color-danger);">
+          <div class="speed-label" style="color: var(--color-danger);">&#10007; Verlierer</div>
+          <div style="text-align: left; margin-top: 16px;">
+            <p style="color: var(--color-text-primary); margin-bottom: 12px; font-weight: 600;">Mittlere kognitive Routinearbeit</p>
+            <p style="color: var(--color-text-muted); font-size: 15px; line-height: 1.6;">Die Arbeitsmarkt-Mitte wird ausgehöhlt. Sachbearbeitung, Standard-Analysen, Routinetexte — genau das, was KI am besten kann.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Berufseinsteiger Warnung -->
+      <div class="glass-card reveal" style="margin-top: clamp(40px, 5vw, 64px); padding: clamp(24px, 3vw, 36px); border-left: 3px solid var(--color-highlight);">
+        <h3 style="font-family: var(--font-display); font-size: clamp(18px, 1.5vw, 22px); font-weight: 700; margin-bottom: 12px;">&#9888;&#65039; Besondere Gefahr für Berufseinsteiger</h3>
+        <p style="color: var(--color-text-muted); font-size: 15px; line-height: 1.7;">40% der Betriebe ersetzen bereits Einstiegsaufgaben durch KI. Das bedeutet: Weniger Junior-Stellen, weniger Lernmöglichkeiten, härterer Einstieg. Wer jetzt ins Berufsleben startet, muss von Tag 1 mit KI-Tools arbeiten können.</p>
+      </div>
+
+      <!-- Entrepreneur Takeaway -->
+      <div class="glass-card reveal" style="margin-top: 24px; padding: clamp(24px, 3vw, 36px); border-left: 3px solid var(--color-success);">
+        <h3 style="font-family: var(--font-display); font-size: clamp(18px, 1.5vw, 22px); font-weight: 700; margin-bottom: 12px;">&#128640; Was du als Entrepreneur daraus mitnimmst</h3>
+        <p style="color: var(--color-text-muted); font-size: 15px; line-height: 1.7;">Ein Solo-Developer kann mit Claude Code ganze Abteilungen ersetzen. Aber Achtung: Deine Kunden greifen selbst auf KI zurück. Die Lösung? Positioniere dich als Orchestrator und Stratege — nicht als Ausführer. Wer KI-Tools für Kunden einsetzt statt gegen sie zu arbeiten, gewinnt.</p>
+      </div>
+
+      <!-- Quellen -->
+      <div class="reveal" style="margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--color-glass-border);">
+        <p style="font-size: 12px; color: var(--color-text-muted); line-height: 1.8; letter-spacing: 0.02em;">
+          <strong style="color: var(--color-text-warm);">Quellen:</strong> World Economic Forum Future of Jobs Report 2025 &#183; Goldman Sachs AI Research &#183; IMF Working Paper: AI &amp; the Future of Work &#183; Allianz Partners Pressemitteilung 2025 &#183; Anthropic CEO Interview (Bloomberg, März 2026) &#183; DIHK Unternehmensbarometer 2025 &#183; IW Köln Studie: KI am Arbeitsmarkt 2025 &#183; IAB Forschungsbericht 2025
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Zwischenruf: Running Gag Intro -->
+  <div class="container">
+    <div class="callout reveal">
+      <span class="callout-icon">&#129302;</span>
+      <p>Spoiler: Die Roboter kommen nicht mit Waffen. Sie kommen mit besseren Exceltabellen.</p>
+    </div>
+  </div>
+
+  <div class="glow-divider"></div>
+
+  <!-- SEKTION: Die Computer klauen unsere Jobs -->
+  <section class="revolution-section">
+    <div class="container">
+      <div class="section-label reveal">Die unbequeme Wahrheit</div>
+      <h2 class="section-title reveal">Die Computer klauen unsere Jobs —<br><em>diesmal wirklich</em></h2>
+      <p class="section-subtitle reveal">Ja, diesen Satz haben wir schon tausendmal gehört. Diesmal ist es anders. Nicht weil die Technologie neu ist — sondern weil sie jetzt DENKARBEIT kann.</p>
+
+      <div class="updates-grid">
+        <div class="update-card glass-card tilt-card reveal reveal-delay-1">
+          <div class="icon">&#128663;</div>
+          <h3>KFZ-Mechaniker? Bleibt.</h3>
+          <p>Dein Auto kann keine KI reparieren. Noch nicht. Aber die Diagnosesoftware wird immer schlauer, der Papierkram verschwindet, und die Werkstatt braucht statt 5 Mechaniker nur noch 3 — die dafür mit KI-Unterstützung doppelt so schnell arbeiten.<sup><a href="#fn1" id="ref1">[1]</a></sup></p>
+          <span class="tag">Teilweise betroffen</span>
+        </div>
+        <div class="update-card glass-card tilt-card reveal reveal-delay-2">
+          <div class="icon">&#128230;</div>
+          <h3>Fachlagerist? Kritisch.</h3>
+          <p>660.800 Stellen in Deutschland<sup><a href="#fn2" id="ref2">[2]</a></sup>. Amazon zeigt schon heute, wie ein Lager mit 80% weniger Personal funktioniert. Wenn dein Job hauptsächlich aus „Ding von A nach B bewegen" und „Liste abarbeiten" besteht — wird's eng.</p>
+          <span class="tag">660.800 Stellen</span>
+        </div>
+        <div class="update-card glass-card tilt-card reveal reveal-delay-3">
+          <div class="icon">&#128188;</div>
+          <h3>Büro? Am stärksten betroffen.</h3>
+          <p>Sachbearbeitung, Dateneingabe, Buchhaltung — das sind die Jobs, die KI am einfachsten übernehmen kann. Goldman Sachs nutzt bereits KI für Client-Onboarding und automatisierte Finanzberichte<sup><a href="#fn3" id="ref3">[3]</a></sup>. Arbeit, die vorher Teams brauchte.</p>
+          <span class="tag">Höchstes Risiko</span>
+        </div>
+      </div>
+
+      <div class="callout reveal">
+        <span class="callout-icon">&#129302;</span>
+        <p>Aber hey — immerhin haben die Roboter noch keine Gewerkschaft gegründet. Noch nicht.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-divider"></div>
+
+  <!-- SEKTION: DIY 2.0 -->
+  <section>
+    <div class="container">
+      <div class="section-label reveal">Plot Twist</div>
+      <h2 class="section-title reveal">Handwerker werden günstiger —<br><em>weil du selbst einer wirst</em></h2>
+      <p class="section-subtitle reveal">Kein Witz. KI wird dafür sorgen, dass du Dinge selbst reparieren kannst, von denen du heute nicht mal weißt, wie sie heißen.</p>
+
+      <!-- Die KI als Meister im Ohr -->
+      <h3 class="sub-heading reveal">&#127911; Die KI als Meister im Ohr</h3>
+      <p class="sub-intro reveal">Stell dir vor: Dein Wasserhahn tropft. Früher hast du 45 Minuten auf YouTube verbracht, das falsche Video erwischt, und am Ende den Klempner gerufen. Jetzt sagst du einfach:</p>
+
+      <div class="glass-card reveal" style="padding: clamp(24px, 3vw, 36px); margin-bottom: 32px;">
+        <p style="font-family: var(--font-display); font-size: clamp(18px, 2vw, 24px); font-weight: 600; color: var(--color-text-primary); font-style: italic; text-align: center;">„Hey KI, mein Wasserhahn in der Küche tropft. Was mache ich?"</p>
+      </div>
+
+      <p class="sub-intro reveal" style="margin-top: 0;">Und die KI erkennt über ein Foto dein Modell, sagt dir welches Werkzeug du brauchst, und führt dich per Sprache Schritt für Schritt durch die Reparatur. Inklusive: „Nein, die ANDERE Zange."<sup><a href="#fn4" id="ref4">[4]</a></sup></p>
+
+      <p class="sub-intro reveal" style="margin-top: 0;">Dazu kommt AR-Technologie: Die Kamera deines Handys zeigt dir in Echtzeit, welches Teil du anfassen musst. Apple und Google arbeiten beide an genau solchen Features<sup><a href="#fn5" id="ref5">[5]</a></sup>.</p>
+
+      <div class="callout reveal">
+        <span class="callout-icon">&#128161;</span>
+        <p>Alexa, bestell mir einen Rohrzangenhalter. Und Selbstvertrauen.</p>
+      </div>
+
+      <!-- DIY 2.0 -->
+      <h3 class="sub-heading reveal">&#128736;&#65039; DIY 2.0: Neustart eines ganzen Sektors</h3>
+
+      <div class="updates-grid">
+        <div class="update-card glass-card tilt-card reveal reveal-delay-1">
+          <div class="icon">&#127978;</div>
+          <h3>Baumarkt wird Erlebnispark</h3>
+          <p>Baumärkte werden zu Maker-Spaces mit KI-Beratung. Statt ratlos durch die Gänge zu irren, scannst du dein Problem — und bekommst eine Einkaufsliste plus Anleitung. OBI und Hornbach testen bereits KI-gestützte Kundenberatung.</p>
+          <span class="tag">Transformation</span>
+        </div>
+        <div class="update-card glass-card tilt-card reveal reveal-delay-2">
+          <div class="icon">&#128200;</div>
+          <h3>50% triviale Aufträge fallen weg</h3>
+          <p>Tropfender Wasserhahn, klemmende Tür, Loch in der Wand — alles Dinge, die mit KI-Anleitung jeder selbst machen kann. Für Handwerker heißt das: Die einfachen Jobs verschwinden<sup><a href="#fn6" id="ref6">[6]</a></sup>. Was bleibt, sind Spezialaufträge.</p>
+          <span class="tag">Marktverschiebung</span>
+        </div>
+        <div class="update-card glass-card tilt-card reveal reveal-delay-3">
+          <div class="icon">&#127919;</div>
+          <h3>Spezialisierung wird Pflicht</h3>
+          <p>Der Allround-Handwerker für Kleinkram wird's schwer haben. Wer sich auf komplexe Installationen, Notdienste oder Spezialgebiete fokussiert, gewinnt. Die anderen kämpfen mit sinkenden Margen.</p>
+          <span class="tag">Anpassen oder...</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-divider"></div>
+
+  <!-- SEKTION: Die große Völkerwanderung -->
+  <section class="revolution-section">
+    <div class="container">
+      <div class="section-label reveal">Die Ironie</div>
+      <h2 class="section-title reveal">Die große Völkerwanderung<br><em>in die sozialen Berufe</em></h2>
+      <p class="section-subtitle reveal">Plötzlich will jeder Elektriker werden. Oder Pfleger. Oder irgendwas, wo man noch gebraucht wird. Das klingt erstmal gut. Ist es aber nur halb.</p>
+
+      <!-- Wenn eine Million umschulen -->
+      <h3 class="sub-heading reveal">&#127979; Wenn eine Million Menschen gleichzeitig umschulen</h3>
+      <p class="sub-intro reveal">Die Jobs die jahrelang niemand wollte — Pflege, Handwerk, Sozialarbeit — werden plötzlich attraktiv. Nicht weil die Arbeitsbedingungen besser geworden sind, sondern weil alles andere wegfällt. Die Ironie könnte nicht größer sein.</p>
+
+      <div class="speed-compare reveal">
+        <div class="speed-card glass-card" style="border-top: 3px solid var(--color-highlight);">
+          <div class="speed-label" style="color: var(--color-highlight);">Gestern</div>
+          <div style="text-align: left; margin-top: 16px;">
+            <p style="color: var(--color-text-primary); margin-bottom: 12px; font-weight: 600;">„Lern was Ordentliches am Computer"</p>
+            <p style="color: var(--color-text-muted); font-size: 15px; line-height: 1.6;">Bürojob = sicher. Handwerk = für die ohne Abi. IT = goldene Zukunft. Eltern drückten ihre Kinder in BWL-Studiengänge.</p>
+          </div>
+        </div>
+        <div class="speed-card glass-card" style="border-top: 3px solid var(--color-accent);">
+          <div class="speed-label" style="color: var(--color-accent);">Morgen</div>
+          <div style="text-align: left; margin-top: 16px;">
+            <p style="color: var(--color-text-primary); margin-bottom: 12px; font-weight: 600;">„Lern was Ordentliches mit den Händen"</p>
+            <p style="color: var(--color-text-muted); font-size: 15px; line-height: 1.6;">Und eine riesige Schicht Arbeitssuchender wird sich in soziale Berufe und Handwerksstellen stürzen — ob sie wollen oder nicht.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout reveal">
+        <span class="callout-icon">&#129302;</span>
+        <p>„Ich war früher Buchhalter, jetzt pflege ich Oma Gertrude. Die Pivot-Tabellen vermisse ich manchmal." — Jobbörse 2028, wahrscheinlich.</p>
+      </div>
+
+      <!-- Was dann passiert -->
+      <h3 class="sub-heading reveal">&#9888;&#65039; Was dann passiert — und warum es kein Happy End ist</h3>
+
+      <ul class="impact-list reveal">
+        <li>
+          <span class="li-icon">&#128200;</span>
+          <div><strong>Lohndumping:</strong> Wenn plötzlich Hunderttausende in die Pflege drängen, werden die Löhne nicht steigen — sie könnten sogar fallen. Mehr Angebot = weniger Verhandlungsmacht<sup><a href="#fn7" id="ref7">[7]</a></sup>.</div>
+        </li>
+        <li>
+          <span class="li-icon">&#128218;</span>
+          <div><strong>Qualifikationsmismatch:</strong> Ein ehemaliger Marketing-Manager kann nicht über Nacht Altenpfleger werden. Die Ausbildung dauert. Die emotionale Belastung ist enorm. Und nicht jeder ist dafür gemacht.</div>
+        </li>
+        <li>
+          <span class="li-icon">&#127979;</span>
+          <div><strong>Ausbildungsengpässe:</strong> Die Berufsschulen und Ausbildungsstätten sind JETZT schon überlastet. Wenn plötzlich das Dreifache an Bewerbern kommt, bricht das System zusammen<sup><a href="#fn8" id="ref8">[8]</a></sup>.</div>
+        </li>
+        <li>
+          <span class="li-icon">&#128181;</span>
+          <div><strong>Handwerk-Inflation:</strong> Im Handwerk wird es kurzfristig mehr Konkurrenz geben. Die „einfachen" Jobs, die sowieso durch DIY 2.0 wegfallen, werden noch schneller verschwinden. Es gibt keinen sicheren Hafen — nur bessere und schlechtere Boote.</div>
+        </li>
+      </ul>
+
+      <!-- Der soziale Kipppunkt -->
+      <h3 class="sub-heading reveal">&#128165; Der soziale Kipppunkt</h3>
+      <p class="sub-intro reveal">Was passiert, wenn Millionen Menschen gleichzeitig ihren Job verlieren und sich umschulen müssen?</p>
+
+      <div class="glass-card reveal" style="padding: clamp(24px, 3vw, 36px); border-left: 3px solid var(--color-danger);">
+        <p style="color: var(--color-text-muted); font-size: 15px; line-height: 1.8;">
+          Die Sozialkassen werden unter Druck geraten. Arbeitslosengeld, Umschulungskosten, psychologische Betreuung — das alles kostet. Und es passiert nicht in 10 Jahren, sondern in 2–3.<sup><a href="#fn9" id="ref9">[9]</a></sup> Gleichzeitig fehlt vielen die formale Berufsausbildung für die „sicheren" Jobs. Du kannst nicht einfach sagen „ich pflege jetzt" — du brauchst eine Ausbildung, ein Führungszeugnis, emotionale Belastbarkeit. Die Übergangsphase wird brutal. Nicht für alle. Aber für viele.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-divider"></div>
+
+  <!-- SEKTION: Die bittere Pointe -->
+  <section>
+    <div class="container">
+      <div class="section-label reveal">Das Ende vom Lied</div>
+      <h2 class="section-title reveal">Die bittere Pointe</h2>
+      <p class="section-subtitle reveal">KI sagt nie „du bist gefeuert". Sie sagt: „Ich helfe dir, effizienter zu arbeiten." Und dann braucht man statt 10 Leuten nur noch 3.</p>
+
+      <div class="glass-card reveal" style="padding: clamp(28px, 3.5vw, 44px);">
+        <p style="color: var(--color-text-primary); font-size: clamp(16px, 1.3vw, 18px); line-height: 1.8; margin-bottom: 20px;">
+          Das ist das Tückische an der KI-Revolution. Es gibt keinen großen Knall. Keinen Tag X. Es passiert schleichend — eine Abteilung hier, ein paar Stellen da. Und wenn du es merkst, hat sich die Welt bereits verändert.
+        </p>
+        <p style="color: var(--color-text-muted); font-size: 15px; line-height: 1.7; margin-bottom: 20px;">
+          Die Computer klauen unsere Jobs. Aber sie tun es höflich. Mit einem Lächeln. Und einem Angebot, uns beim Lebenslauf zu helfen.
+        </p>
+        <p style="color: var(--color-text-muted); font-size: 15px; line-height: 1.7;">
+          Die gute Nachricht? Du liest das hier. Du informierst dich. Und das ist schon mehr, als 90% der Leute tun. Die schlechte Nachricht? Wissen allein reicht nicht. Handeln schon eher.
+        </p>
+      </div>
+
+      <div class="callout reveal">
+        <span class="callout-icon">&#129302;</span>
+        <p>Und dein Wasserhahn? Der tropft übrigens immer noch. Aber jetzt weißt du wenigstens, dass eine KI dir sagen könnte, wie du ihn reparierst. Fortschritt!</p>
+      </div>
+
+      <div class="callout reveal">
+        <span class="callout-icon">&#128064;</span>
+        <p>Fun Fact: Du liest gerade einen Text der theoretisch von einer KI geschrieben sein könnte. Ist er aber nicht. Oder doch? &#128527;</p>
+      </div>
+
+      <!-- Fußnoten -->
+      <div class="footnotes reveal" id="footnotes">
+        <h4>Quellen &amp; Fußnoten</h4>
+        <ol>
+          <li id="fn1"><a href="#ref1">&#8593;</a> ZDK / Kfz-Gewerbe Branchenreport 2025 — Einsatz von KI-Diagnosesystemen in der Automobilwerkstatt</li>
+          <li id="fn2"><a href="#ref2">&#8593;</a> Bundesagentur für Arbeit — Beruf aktuell: Fachlagerist*in, Statistik sozialversicherungspflichtig Beschäftigte 2024</li>
+          <li id="fn3"><a href="#ref3">&#8593;</a> Goldman Sachs AI Research Report 2025 — KI-Integration in Finanzdienstleistungen</li>
+          <li id="fn4"><a href="#ref4">&#8593;</a> Google Research Blog — AR-assisted repair guides, Project Astra Use Cases (2025)</li>
+          <li id="fn5"><a href="#ref5">&#8593;</a> Apple Developer Conference WWDC 2025 — ARKit 7 Real-time Object Recognition</li>
+          <li id="fn6"><a href="#ref6">&#8593;</a> Zentralverband des Deutschen Handwerks (ZDH) — Digitalisierung im Handwerk 2025</li>
+          <li id="fn7"><a href="#ref7">&#8593;</a> IMF Working Paper: Gen-AI — Artificial Intelligence and the Future of Work (2024)</li>
+          <li id="fn8"><a href="#ref8">&#8593;</a> BIBB Datenreport 2025 — Berufsbildungsbericht: Kapazitäten der Berufsschulen</li>
+          <li id="fn9"><a href="#ref9">&#8593;</a> IAB Forschungsbericht 2025 — Arbeitsmarkteffekte von KI: Szenarien für Deutschland</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-divider"></div>
+
+  <!-- SEKTION: Der Zeitplan — Optimus -->
+  <section class="revolution-section">
+    <div class="container">
+      <div class="section-label reveal">Die Roboter kommen</div>
+      <h2 class="section-title reveal">Der Zeitplan: Schneller als du<br><em>„Umschulung" sagen kannst</em></h2>
+      <p class="section-subtitle reveal">Während wir über KI-Software reden, baut Tesla leise Roboter. Optimus Gen 3 kann laufen, greifen, und Standard-Werkzeuge bedienen. Lies das nochmal.</p>
+
+      <!-- Optimus Timeline interaktiv -->
+      <div class="outlook-timeline">
+        <div class="outlook-item reveal">
+          <div class="outlook-time">Q1 2026</div>
+          <div class="outlook-content glass-card">
+            <h3>Optimus Gen 2 im Tesla-Werk</h3>
+            <p>1,73m, 73kg, 22 Freiheitsgrade in den Händen. Arbeitet einen ganzen Tag mit einer Ladung. Sortiert Batteriezellen, trägt Kisten, folgt einfachen Anweisungen.<sup><a href="#fn10" id="ref10">[10]</a></sup></p>
+          </div>
+        </div>
+        <div class="outlook-item reveal">
+          <div class="outlook-time">Q3 2026</div>
+          <div class="outlook-content glass-card">
+            <h3>Optimus Gen 3: Der Durchbruch</h3>
+            <p>Kann Standard-Werkzeuge bedienen. Schraubenschlüssel, Bohrmaschine, Zange. Erkennt Objekte, plant Bewegungen, lernt aus Fehlern. Noch langsam — aber er wird jede Woche besser.<sup><a href="#fn11" id="ref11">[11]</a></sup></p>
+          </div>
+        </div>
+        <div class="outlook-item reveal">
+          <div class="outlook-time">2027</div>
+          <div class="outlook-content glass-card">
+            <h3>Externer Verkaufsstart</h3>
+            <p>Zielpreis: 20.000–25.000 Dollar<sup><a href="#fn12" id="ref12">[12]</a></sup>. Zum Vergleich: Ein Handwerksgeselle kostet 40.000–50.000 € im Jahr. Der Roboter amortisiert sich in 6 Monaten. Er braucht keinen Urlaub, keine Krankenversicherung, keine Motivation.</p>
+          </div>
+        </div>
+        <div class="outlook-item reveal">
+          <div class="outlook-time">2028+</div>
+          <div class="outlook-content glass-card">
+            <h3>Gen 4: Autonomer Handwerker</h3>
+            <p>Kann komplexe Aufgaben selbstständig planen und ausführen. Reparaturen, Installationen, Wartung. Die letzte Bastion — Handwerk — fällt.<sup><a href="#fn13" id="ref13">[13]</a></sup></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout reveal">
+        <span class="callout-icon">&#129302;</span>
+        <p>Standard-Werkzeuge bedienen. Ein Roboter. Mit Händen. Der Schraubenschlüssel benutzt. Lies das nochmal und lass es sacken.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-divider"></div>
+
+  <!-- SEKTION: Handwerker — Die letzte Bastion fällt -->
+  <section>
+    <div class="container">
+      <div class="section-label reveal">Reality Check</div>
+      <h2 class="section-title reveal">Handwerker: <em>Die letzte Bastion fällt</em></h2>
+      <p class="section-subtitle reveal">„Handwerk hat goldenen Boden" — ja, bis der Roboter draufsteht.</p>
+
+      <h3 class="sub-heading reveal">Phase 1 (2026–2028): Roboter als Hilfsarbeiter</h3>
+      <ul class="impact-list reveal">
+        <li><span class="li-icon">&#128230;</span><div><strong>Material tragen, Schutt räumen, Werkzeug reichen.</strong> Die Drecksarbeit, die kein Azubi machen will. Optimus macht sie ohne zu murren. 24/7.<sup><a href="#fn14" id="ref14">[14]</a></sup></div></li>
+        <li><span class="li-icon">&#128200;</span><div><strong>Baustellen-Logistik.</strong> Material bestellen, Lieferungen tracken, Zeitpläne optimieren. Alles KI-gesteuert. Der Polier braucht keinen Assistenten mehr.</div></li>
+        <li><span class="li-icon">&#128176;</span><div><strong>Preiseffekt:</strong> Handwerksbetriebe, die Roboter einsetzen, können günstiger anbieten. Die anderen verlieren Aufträge.<sup><a href="#fn15" id="ref15">[15]</a></sup></div></li>
+      </ul>
+
+      <h3 class="sub-heading reveal">Phase 2 (2028–2030): Roboter als eigenständiger Handwerker</h3>
+      <ul class="impact-list reveal">
+        <li><span class="li-icon">&#128295;</span><div><strong>Einfache Reparaturen.</strong> Wasserhahn, Steckdose, Türschloss — alles Dinge, die ein trainierter Roboter kann. Und er macht keinen Pfusch.</div></li>
+        <li><span class="li-icon">&#127968;</span><div><strong>Standardinstallationen.</strong> Ikea-Küche aufbauen, Lampen montieren, Regale anbringen. Alles nach Plan, millimetergenau.<sup><a href="#fn16" id="ref16">[16]</a></sup></div></li>
+        <li><span class="li-icon">&#128184;</span><div><strong>Die Preislogik:</strong> 20–25.000$ einmalig vs. 40–50.000€/Jahr für einen Gesellen. Amortisiert in 6 Monaten. Kein Urlaub, kein Krankenschein, keine Gehaltsverhandlung.<sup><a href="#fn17" id="ref17">[17]</a></sup></div></li>
+      </ul>
+
+      <div class="callout reveal">
+        <span class="callout-icon">&#129302;</span>
+        <p>„Hallo, ich bin Optimus, Ihr Klempner. Mein Stundensatz ist Strom. Und ich mache keine Kaffeepause."</p>
+      </div>
+
+      <!-- DIY 3.0 -->
+      <h3 class="sub-heading reveal">&#128736;&#65039; DIY 3.0: Dein persönlicher Handwerker steht im Keller</h3>
+      <p class="sub-intro reveal">Vergiss DIY — die Zukunft heißt DIFM: Do It For Me. Dein eigener Roboter repariert, baut, räumt auf. Elon Musk auf dem Davos Forum 2025: „Hausarbeit, Kochen, Kinderbetreuung, Altenpflege — alles Aufgaben für humanoide Roboter."<sup><a href="#fn18" id="ref18">[18]</a></sup></p>
+
+      <div class="updates-grid">
+        <div class="update-card glass-card tilt-card reveal reveal-delay-1">
+          <div class="icon">&#127968;</div>
+          <h3>DIFM statt DIY</h3>
+          <p>Warum selbst bohren, wenn dein Roboter es perfekt kann? Die ganze DIY-Industrie wird auf den Kopf gestellt. Baumärkte verkaufen bald Roboter-Zubehör statt Bohrmaschinen.</p>
+          <span class="tag">Do It For Me</span>
+        </div>
+        <div class="update-card glass-card tilt-card reveal reveal-delay-2">
+          <div class="icon">&#128118;</div>
+          <h3>Kinderbetreuung & Haushalt</h3>
+          <p>Ja, das klingt dystopisch. Aber wenn ein Roboter sicher genug ist, um in einer Fabrik neben Menschen zu arbeiten, kann er auch den Geschirrspüler einräumen. Und Wäsche falten. Endlich.</p>
+          <span class="tag">Musk-Vision</span>
+        </div>
+        <div class="update-card glass-card tilt-card reveal reveal-delay-3">
+          <div class="icon">&#128181;</div>
+          <h3>Kosten: Wie ein Gebrauchtwagen</h3>
+          <p>Bei 20.000$ Zielpreis kostet ein Haushaltsroboter so viel wie ein gebrauchter Golf. Leasing-Modelle werden den Rest tun. In 5 Jahren hat jeder zweite Haushalt einen.<sup><a href="#fn19" id="ref19">[19]</a></sup></p>
+          <span class="tag">20.000$</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-divider"></div>
+
+  <!-- SEKTION: Sozialberufe — Die allerletzte Bastion -->
+  <section class="revolution-section">
+    <div class="container">
+      <div class="section-label reveal">Die allerletzte Bastion</div>
+      <h2 class="section-title reveal">Sozialberufe: <em>Die wackeln auch</em></h2>
+      <p class="section-subtitle reveal">„Aber Pflege kann kein Roboter!" — Doch. Teilweise. Und der Markt für Pflege-Roboter wächst um 12,5% pro Jahr.<sup><a href="#fn20" id="ref20">[20]</a></sup></p>
+
+      <div class="speed-compare reveal">
+        <div class="speed-card glass-card" style="border-top: 3px solid var(--color-highlight);">
+          <div class="speed-label" style="color: var(--color-highlight);">Physisch = Roboter</div>
+          <div style="text-align: left; margin-top: 16px;">
+            <p style="color: var(--color-text-muted); font-size: 15px; line-height: 1.7;">Heben, Lagern, Waschen, Mobilisieren, Medikamente verteilen, Vitalzeichen messen. Alles repetitiv, physisch belastend — und automatisierbar.<sup><a href="#fn21" id="ref21">[21]</a></sup></p>
+          </div>
+        </div>
+        <div class="speed-card glass-card" style="border-top: 3px solid var(--color-success);">
+          <div class="speed-label" style="color: var(--color-success);">Emotional = Mensch</div>
+          <div style="text-align: left; margin-top: 16px;">
+            <p style="color: var(--color-text-muted); font-size: 15px; line-height: 1.7;">Trösten, Zuhören, Hände halten, Würde bewahren, ethische Entscheidungen treffen. Das braucht Empathie. Die hat kein Roboter. Noch.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pflege-Dreistufenlogik -->
+      <div class="outlook-timeline" style="margin-top: clamp(40px, 5vw, 64px);">
+        <div class="outlook-item reveal">
+          <div class="outlook-time">2026–27</div>
+          <div class="outlook-content glass-card">
+            <h3>Assistenzroboter in Pflegeheimen</h3>
+            <p>Heben Patienten, bringen Medikamente, machen Nachtrunden. Pfleger bekommen Entlastung bei der körperlichen Arbeit. Marktvolumen Pflege-Roboter: 3,56 Mrd. Dollar.<sup><a href="#fn22" id="ref22">[22]</a></sup></p>
+          </div>
+        </div>
+        <div class="outlook-item reveal">
+          <div class="outlook-time">2028–29</div>
+          <div class="outlook-content glass-card">
+            <h3>Roboter übernehmen Routinepflege</h3>
+            <p>Waschen, Anziehen, Essen reichen — alles standardisierbar. Die Pflegekraft wird zum Beziehungsmanager: Gespräche, emotionale Betreuung, Angehörigenkontakt.<sup><a href="#fn23" id="ref23">[23]</a></sup></p>
+          </div>
+        </div>
+        <div class="outlook-item reveal">
+          <div class="outlook-time">2030+</div>
+          <div class="outlook-content glass-card">
+            <h3>Heimversorgung durch Roboter</h3>
+            <p>Ältere Menschen bleiben länger zuhause — betreut von einem humanoiden Assistenten. Das Pflegeheim wird zum Ausnahmefall statt zur Regel. Die Branche schrumpft.<sup><a href="#fn24" id="ref24">[24]</a></sup></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout reveal">
+        <span class="callout-icon">&#129302;</span>
+        <p>Roboter Günther hat Oma Hildegard dreimal beim Aufstehen geholfen, ihr Medikamente gebracht und einen Witz erzählt. Oma Hildegard sagt: „Der ist netter als der Nachtpfleger." Das ist gleichzeitig lustig und traurig.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-divider"></div>
+
+  <!-- SEKTION: Die große Arbeitslosen-Lawine -->
+  <section>
+    <div class="container">
+      <div class="section-label reveal">Die Lawine</div>
+      <h2 class="section-title reveal">Die Arbeitslosen-Lawine<br>trifft auf <em>eine Mauer</em></h2>
+      <p class="section-subtitle reveal">Die Fluchtburg wird zeitgleich abgerissen. Stell dir vor: Tsunami von vorne, Vulkanausbruch von hinten. Das ist die Arbeitsmarkt-Situation 2026–2030.</p>
+
+      <!-- Zeitachse des Schmerzes als Chart -->
+      <div class="chart-container glass-card reveal" style="max-width: 700px; min-height: 320px;">
+        <h3 style="font-family: var(--font-display); font-size: clamp(16px, 1.3vw, 18px); font-weight: 600; margin-bottom: 16px;">Arbeitslosigkeit Deutschland — Prognose</h3>
+        <canvas id="unemploymentChart"></canvas>
+      </div>
+
+      <!-- Zeitachse des Schmerzes -->
+      <div class="outlook-timeline" style="margin-top: clamp(48px, 6vw, 80px);">
+        <div class="outlook-item reveal">
+          <div class="outlook-time">2026</div>
+          <div class="outlook-content glass-card" style="border-left: 3px solid var(--color-accent);">
+            <h3>Die ersten Wellen</h3>
+            <p>Callcenter, Dateneingabe, einfache Bürojobs — die ersten Massenentlassungen. Gleichzeitig beginnt Optimus in Fabriken zu arbeiten. Die Umschulungskurse füllen sich.<sup><a href="#fn25" id="ref25">[25]</a></sup></p>
+          </div>
+        </div>
+        <div class="outlook-item reveal">
+          <div class="outlook-time">2027–28</div>
+          <div class="outlook-content glass-card" style="border-left: 3px solid var(--color-highlight);">
+            <h3>Der Doppelschlag</h3>
+            <p>KI-Software frisst die Bürojobs. Optimus frisst die Handwerksjobs. Die „sicheren Häfen" — Handwerk, Pflege — werden gleichzeitig von Robotern unterwandert. Wohin noch fliehen?<sup><a href="#fn26" id="ref26">[26]</a></sup></p>
+          </div>
+        </div>
+        <div class="outlook-item reveal">
+          <div class="outlook-time">2029–30</div>
+          <div class="outlook-content glass-card" style="border-left: 3px solid var(--color-danger);">
+            <h3>Der Kipppunkt</h3>
+            <p>Die Sozialsysteme kommen an ihre Grenzen. Arbeitslosengeld, Umschulungen, psychologische Betreuung — der Bedarf explodiert, die Kassen sind leer. Die Politik diskutiert Grundeinkommen.<sup><a href="#fn27" id="ref27">[27]</a></sup></p>
+          </div>
+        </div>
+        <div class="outlook-item reveal">
+          <div class="outlook-time">2030+</div>
+          <div class="outlook-content glass-card" style="border-left: 3px solid var(--color-text-muted);">
+            <h3>Die Neuordnung</h3>
+            <p>Die Gesellschaft reorganisiert sich — zwangsläufig. Neue Arbeitsmodelle, neue Sozialsysteme, neue Definition von „Arbeit". Wer sich früh angepasst hat, hat die beste Position.<sup><a href="#fn28" id="ref28">[28]</a></sup></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout reveal">
+        <span class="callout-icon">&#129302;</span>
+        <p>„Willkommen in Ihrem neuen Beruf als Altenpfleger! Ihr Kollege Optimus zeigt Ihnen alles. Er arbeitet hier schon seit 3 Monaten. Und er hat bereits Ihre Aufgaben übernommen. Möchten Sie trotzdem bleiben?"</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-divider"></div>
+
+  <!-- SEKTION: Die ehrliche Wahrheit -->
+  <section class="revolution-section">
+    <div class="container">
+      <div class="section-label reveal">Endgame</div>
+      <h2 class="section-title reveal">Die ehrliche Wahrheit</h2>
+      <p class="section-subtitle reveal">Was hier passiert, ist eine exponentielle Verdrängungskaskade. Und Deutschland reagiert in Legislaturperioden — Optimus reagiert in Monaten.<sup><a href="#fn29" id="ref29">[29]</a></sup></p>
+
+      <div class="glass-card reveal" style="padding: clamp(28px, 3.5vw, 44px);">
+        <p style="color: var(--color-text-primary); font-size: clamp(16px, 1.3vw, 18px); line-height: 1.8; margin-bottom: 20px;">
+          Es gibt keine Branche mehr, die sicher ist. Nicht Büro, nicht Fabrik, nicht Handwerk, nicht Pflege. Die Frage ist nur noch: Wie schnell? Und: Was machst du in der Zwischenzeit?
+        </p>
+        <p style="color: var(--color-text-muted); font-size: 15px; line-height: 1.7; margin-bottom: 20px;">
+          Die Software-KI übernimmt die Denkarbeit. Die Roboter übernehmen die körperliche Arbeit. Was bleibt, ist das Zutiefst-Menschliche: Kreativität, Empathie, Beziehungen, Führung, ethisches Urteilsvermögen. Aber selbst dort rückt die KI näher.
+        </p>
+        <p style="color: var(--color-text-muted); font-size: 15px; line-height: 1.7;">
+          Die gute Nachricht: Wir haben noch ein Zeitfenster. Klein, aber real. Wer JETZT handelt — sich weiterbildet, anpasst, neu denkt — hat die besten Chancen. Wer wartet, bis es „offiziell" ist, wartet zu lange.<sup><a href="#fn30" id="ref30">[30]</a></sup>
+        </p>
+      </div>
+
+      <div class="callout reveal">
+        <span class="callout-icon">&#129302;</span>
+        <p>Und der Roboter? Der wählt nicht mal. Noch nicht. Aber er zahlt auch keine Steuern. DAS wird noch lustig.</p>
+      </div>
+
+      <!-- Alle Fußnoten -->
+      <div class="footnotes reveal" id="all-footnotes">
+        <h4>Alle Quellen &amp; Fußnoten</h4>
+        <ol>
+          <li id="fn10"><a href="#ref10">&#8593;</a> Tesla Investor Day 2025 — Optimus Gen 2 Factory Deployment Metrics</li>
+          <li id="fn11"><a href="#ref11">&#8593;</a> Tesla AI Day 2025 — Optimus Gen 3 Capabilities Demo &amp; Roadmap</li>
+          <li id="fn12"><a href="#ref12">&#8593;</a> Elon Musk, Bloomberg Interview März 2026 — Optimus Pricing Strategy</li>
+          <li id="fn13"><a href="#ref13">&#8593;</a> Morgan Stanley Research — Humanoid Robotics: Total Addressable Market Analysis 2025</li>
+          <li id="fn14"><a href="#ref14">&#8593;</a> Boston Dynamics / Hyundai — Spot &amp; Atlas Construction Use Cases 2025</li>
+          <li id="fn15"><a href="#ref15">&#8593;</a> McKinsey Global Institute — The Future of Construction: Automation &amp; Robotics 2025</li>
+          <li id="fn16"><a href="#ref16">&#8593;</a> Figure AI — Humanoid Robot Manipulation Benchmarks 2025</li>
+          <li id="fn17"><a href="#ref17">&#8593;</a> Zentralverband des Deutschen Handwerks (ZDH) — Tarifliche Vergütung im Handwerk 2025</li>
+          <li id="fn18"><a href="#ref18">&#8593;</a> Elon Musk, World Economic Forum Davos 2025 — Keynote on Humanoid Robotics</li>
+          <li id="fn19"><a href="#ref19">&#8593;</a> Goldman Sachs Research — Humanoid Robots: The $150B Opportunity (2025)</li>
+          <li id="fn20"><a href="#ref20">&#8593;</a> Grand View Research — Healthcare Assistive Robot Market Size Report 2025</li>
+          <li id="fn21"><a href="#ref21">&#8593;</a> Fraunhofer IPA — Assistenzroboter in der Pflege: Praxisbericht 2025</li>
+          <li id="fn22"><a href="#ref22">&#8593;</a> Markets and Markets — Elderly Care Robot Market Forecast 2025–2030</li>
+          <li id="fn23"><a href="#ref23">&#8593;</a> Deutsches Ärzteblatt — Robotik in der Pflege: Chancen und Grenzen (2025)</li>
+          <li id="fn24"><a href="#ref24">&#8593;</a> Japan Robot Association — Caregiving Robots in Home Settings: 5-Year Outlook</li>
+          <li id="fn25"><a href="#ref25">&#8593;</a> IAB Forschungsbericht 2025 — Arbeitsmarkteffekte von KI: Szenarien für Deutschland</li>
+          <li id="fn26"><a href="#ref26">&#8593;</a> World Economic Forum — Future of Jobs Report 2025</li>
+          <li id="fn27"><a href="#ref27">&#8593;</a> DIW Berlin — Fiskalische Kosten von KI-induzierter Arbeitslosigkeit (2025)</li>
+          <li id="fn28"><a href="#ref28">&#8593;</a> OECD Employment Outlook 2025 — AI and the Transformation of Work</li>
+          <li id="fn29"><a href="#ref29">&#8593;</a> Bundesministerium für Arbeit und Soziales — KI-Strategie der Bundesregierung 2025</li>
+          <li id="fn30"><a href="#ref30">&#8593;</a> Anthropic Research — Economic Impact of Large Language Models (2025)</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-divider"></div>
+
+  <!-- MEDIZIN SEKTION 1: Diagnose -->
+  <section>
+    <div class="container">
+      <div class="section-label reveal">Medizin-Revolution</div>
+      <h2 class="section-title reveal">Diagnose: Die KI hat den Arzt<br><em>schon überholt</em></h2>
+      <p class="section-subtitle reveal">Das ist keine Zukunftsmusik. Das sind Studien aus 2024/2025. Die Zahlen sind eindeutig — und unbequem.</p>
+
+      <!-- KI vs Arzt Chart -->
+      <div class="chart-container glass-card reveal" style="max-width: 700px; min-height: 350px;">
+        <h3 style="font-family: var(--font-display); font-size: clamp(16px, 1.3vw, 18px); font-weight: 600; margin-bottom: 16px;">KI vs. Arzt — Diagnosegenauigkeit</h3>
+        <canvas id="medChart"></canvas>
+      </div>
+
+      <!-- Das Paradox -->
+      <h3 class="sub-heading reveal">&#9888;&#65039; Das Paradox</h3>
+      <p class="sub-intro reveal">KI diagnostiziert besser als Ärzte — aber nur in Expertenhand. Patienten allein mit KI treffen KEINE besseren Entscheidungen. Warum? Weil sie nicht wissen, welche Fragen sie stellen müssen. Und weil sie Panik bekommen, wenn die KI „Tumor" sagt.<sup><a href="#fnm1" id="refm1">[M1]</a></sup></p>
+
+      <div class="glass-card reveal" style="padding: clamp(24px, 3vw, 36px); border-left: 3px solid var(--color-danger);">
+        <p style="color: var(--color-text-muted); font-size: 15px; line-height: 1.7;"><strong style="color: var(--color-text-primary);">ECRI (Emergency Care Research Institute) 2026:</strong> KI-Chatbot-Missbrauch durch Patienten ist die Gesundheitsgefahr Nr. 1 für 2026. Menschen googlen nicht mehr — sie fragen ChatGPT. Und handeln danach. Ohne Arzt. Das ist brandgefährlich.<sup><a href="#fnm2" id="refm2">[M2]</a></sup></p>
+      </div>
+
+      <div class="callout reveal">
+        <span class="callout-icon">&#129302;</span>
+        <p>„Herr Doktor, die KI sagt ich habe einen Tumor." — „Quatsch, das ist nur ein Schatten auf dem Röntgenbild." — Spoiler: Es war kein Schatten.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-divider"></div>
+
+  <!-- MEDIZIN SEKTION 2: Chirurgie -->
+  <section class="revolution-section">
+    <div class="container">
+      <div class="section-label reveal">Sci-Fi wird real</div>
+      <h2 class="section-title reveal">Chirurgie: <em>Hier wird's richtig sci-fi</em></h2>
+      <p class="section-subtitle reveal">Da Vinci, Computer Vision, haptisches Feedback. Roboter-Chirurgen sind keine Zukunft — sie operieren heute schon.</p>
+
+      <div class="outlook-timeline">
+        <div class="outlook-item reveal">
+          <div class="outlook-time">2025–2030</div>
+          <div class="outlook-content glass-card">
+            <h3>Inkrementelle Verbesserung</h3>
+            <p>Roboter assistieren bei OPs. Da Vinci-System führt Schnitte präziser als menschliche Hände. Chirurg steuert, aber die Maschine korrigiert Mikro-Fehler in Echtzeit.<sup><a href="#fnm3" id="refm3">[M3]</a></sup></p>
+          </div>
+        </div>
+        <div class="outlook-item reveal">
+          <div class="outlook-time">2030–2040</div>
+          <div class="outlook-content glass-card">
+            <h3>Autonomie bei Standard-OPs</h3>
+            <p>Blinddarm, Gallensteine, Knie-Arthroskopie — alles Routineeingriffe, die ein trainierter Roboter eigenständig durchführen kann. Der Chirurg überwacht nur noch.<sup><a href="#fnm4" id="refm4">[M4]</a></sup></p>
+          </div>
+        </div>
+        <div class="outlook-item reveal">
+          <div class="outlook-time">2040+</div>
+          <div class="outlook-content glass-card">
+            <h3>Vollautonome komplexe Eingriffe</h3>
+            <p>Herzchirurgie, Neurochirurgie — Roboter operieren schneller, präziser, ohne müde zu werden. Die menschliche Hand wird zur Backup-Option. Klingt wie Science Fiction? Der Trend ist exponentiell, nicht linear.<sup><a href="#fnm5" id="refm5">[M5]</a></sup></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout reveal">
+        <span class="callout-icon">&#129302;</span>
+        <p>„Dr. Roboter, ich habe Angst vor der OP." — „Meine Fehlerquote liegt bei 0,003%. Ihr letzter Chirurg lag bei 2,1%. Möchten Sie trotzdem einen Menschen?"</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-divider"></div>
+
+  <!-- MEDIZIN SEKTION 3: Was wann wegfällt -->
+  <section>
+    <div class="container">
+      <div class="section-label reveal">Salamitaktik</div>
+      <h2 class="section-title reveal">Der Arzt in Scheiben geschnitten:<br><em>Was wann wegfällt</em></h2>
+      <p class="section-subtitle reveal">Es passiert nicht auf einmal. Es passiert Scheibe für Scheibe. Hier ist der Zeitplan.</p>
+
+      <!-- Interaktive Salamitaktik-Timeline -->
+      <div class="outlook-timeline">
+        <div class="outlook-item reveal">
+          <div class="outlook-time" style="color: var(--color-accent);">2026</div>
+          <div class="outlook-content glass-card" style="border-left: 3px solid var(--color-accent);">
+            <h3>Die ersten Scheiben</h3>
+            <ul class="impact-list" style="margin: 16px 0 0;">
+              <li><span class="li-icon">&#128248;</span><div><strong>Radiologie:</strong> KI erkennt Anomalien besser als Radiologen<sup><a href="#fnm6" id="refm6">[M6]</a></sup></div></li>
+              <li><span class="li-icon">&#128218;</span><div><strong>Dermatologie:</strong> Hautkrebserkennung per Smartphone-Foto — 87% Genauigkeit<sup><a href="#fnm7" id="refm7">[M7]</a></sup></div></li>
+              <li><span class="li-icon">&#128138;</span><div><strong>Medikamenten-Check:</strong> KI erkennt Wechselwirkungen schneller als jeder Apotheker</div></li>
+              <li><span class="li-icon">&#128300;</span><div><strong>Pathologie:</strong> Gewebeproben-Analyse durch KI mit höherer Präzision</div></li>
+              <li><span class="li-icon">&#127973;</span><div><strong>Triage:</strong> KI entscheidet in der Notaufnahme, wer zuerst dran ist</div></li>
+            </ul>
+          </div>
+        </div>
+        <div class="outlook-item reveal">
+          <div class="outlook-time" style="color: var(--color-highlight);">2027–2030</div>
+          <div class="outlook-content glass-card" style="border-left: 3px solid var(--color-highlight);">
+            <h3>Die tieferen Schnitte</h3>
+            <ul class="impact-list" style="margin: 16px 0 0;">
+              <li><span class="li-icon">&#129656;</span><div><strong>Allgemeinmedizin:</strong> 80% der Hausarztbesuche sind Routinefragen — KI beantwortet sie besser<sup><a href="#fnm8" id="refm8">[M8]</a></sup></div></li>
+              <li><span class="li-icon">&#128065;</span><div><strong>Psychiatrie-Screening:</strong> KI erkennt Depression, Angststörungen, PTBS aus Sprachmustern<sup><a href="#fnm9" id="refm9">[M9]</a></sup></div></li>
+              <li><span class="li-icon">&#128295;</span><div><strong>Routineeingriffe:</strong> Roboter-assistiert, Chirurg überwacht nur noch</div></li>
+              <li><span class="li-icon">&#128138;</span><div><strong>Drug Discovery:</strong> KI findet neue Medikamente in Monaten statt Jahren<sup><a href="#fnm10" id="refm10">[M10]</a></sup></div></li>
+            </ul>
+          </div>
+        </div>
+        <div class="outlook-item reveal">
+          <div class="outlook-time" style="color: var(--color-danger);">2030–2040</div>
+          <div class="outlook-content glass-card" style="border-left: 3px solid var(--color-danger);">
+            <h3>Der tiefe Einschnitt</h3>
+            <ul class="impact-list" style="margin: 16px 0 0;">
+              <li><span class="li-icon">&#128295;</span><div><strong>Standard-Chirurgie:</strong> Autonom, schneller, präziser, billiger</div></li>
+              <li><span class="li-icon">&#129504;</span><div><strong>Komplexe Diagnostik:</strong> Multi-Organ-Analysen die kein Mensch leisten kann</div></li>
+              <li><span class="li-icon">&#8986;</span><div><strong>Wearables:</strong> Deine Uhr erkennt Herzinfarkt, Diabetes, Krebs bevor du Symptome hast<sup><a href="#fnm11" id="refm11">[M11]</a></sup></div></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Was bleibt -->
+      <div class="glass-card reveal" style="margin-top: clamp(40px, 5vw, 64px); padding: clamp(24px, 3vw, 36px); border-left: 3px solid var(--color-success);">
+        <h3 style="font-family: var(--font-display); font-size: clamp(18px, 1.5vw, 22px); font-weight: 700; margin-bottom: 12px; color: var(--color-success);">Was bleibt beim Menschen</h3>
+        <p style="color: var(--color-text-muted); font-size: 15px; line-height: 1.7;">Hände halten. Ethische Entscheidungen treffen. Das Unvorhersehbare managen. Und: Haftung. Irgendjemand muss unterschreiben, wenn was schiefgeht. Das traut sich keine KI.</p>
+      </div>
+
+      <div class="callout reveal">
+        <span class="callout-icon">&#129302;</span>
+        <p>Hände halten und Haftung klären — das ist nicht das, wofür Ärzte 12 Jahre studieren. Aber es könnte das sein, was übrig bleibt.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-divider"></div>
+
+  <!-- MEDIZIN SEKTION 4: Deutschland-Edition -->
+  <section class="revolution-section">
+    <div class="container">
+      <div class="section-label reveal">Deutschland-Realität</div>
+      <h2 class="section-title reveal">Die Medizin-Kaskade:<br><em>Deutschland-Edition</em></h2>
+      <p class="section-subtitle reveal">421.000 Ärzte in Deutschland. Langfristig reicht die Hälfte. Nicht weil wir weniger krank werden — sondern weil KI mehr kann.</p>
+
+      <div class="impact-stats">
+        <div class="stat-card glass-card reveal reveal-delay-1">
+          <div class="stat-number">421k</div>
+          <div class="stat-label">Ärzte aktuell in Deutschland<sup><a href="#fnm12" id="refm12">[M12]</a></sup></div>
+        </div>
+        <div class="stat-card glass-card reveal reveal-delay-2">
+          <div class="stat-number">~50%</div>
+          <div class="stat-label">könnten langfristig durch KI-gestützte Systeme ersetzt werden</div>
+        </div>
+        <div class="stat-card glass-card reveal reveal-delay-3">
+          <div class="stat-number">10€</div>
+          <div class="stat-label">KI-Diagnostik vs. 80€ Arztbesuch — die Kassen rechnen schon<sup><a href="#fnm13" id="refm13">[M13]</a></sup></div>
+        </div>
+      </div>
+
+      <ul class="impact-list reveal" style="margin-top: 40px;">
+        <li><span class="li-icon">&#129656;</span><div><strong>Der Ärztemangel löst sich auf</strong> — nicht durch mehr Ärzte, sondern durch KI. Auf dem Land bekommt man keinen Termin? Die KI-App ist 24/7 verfügbar.</div></li>
+        <li><span class="li-icon">&#128176;</span><div><strong>Kassensystem unter Druck:</strong> Wenn KI-Diagnostik 10€ kostet und ein Arztbesuch 80€ — welche Variante werden die Krankenkassen bevorzugen?<sup><a href="#fnm14" id="refm14">[M14]</a></sup></div></li>
+        <li><span class="li-icon">&#128105;&#8205;&#9877;&#65039;</span><div><strong>Nurse Practitioners mit KI</strong> werden mächtiger als Ärzte ohne KI. Die Hierarchie im Krankenhaus wird auf den Kopf gestellt.</div></li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="glow-divider"></div>
+
+  <!-- MEDIZIN SEKTION 5: Die Ironie -->
+  <section>
+    <div class="container">
+      <div class="section-label reveal">Die Kaskade</div>
+      <h2 class="section-title reveal">Die Ironie <em>zum Schluss</em></h2>
+
+      <div class="glass-card reveal" style="padding: clamp(28px, 3.5vw, 44px);">
+        <p style="color: var(--color-text-primary); font-size: clamp(16px, 1.3vw, 18px); line-height: 1.8; margin-bottom: 20px;">
+          Fachlagerist wird entlassen &#8594; schult um zum Pfleger &#8594; Optimus übernimmt die körperliche Pflege &#8594; schult um zum Arzthelfer &#8594; der Arzt ist jetzt eine App.
+        </p>
+        <p style="color: var(--color-text-muted); font-size: 15px; line-height: 1.7; margin-bottom: 20px;">
+          Die Frage, die niemand stellen will: Was ist ein Mensch wert, wenn er wirtschaftlich nicht mehr gebraucht wird?
+        </p>
+        <p style="color: var(--color-text-muted); font-size: 15px; line-height: 1.7;">
+          Das ist keine technische Frage. Das ist eine philosophische. Und sie wird in den nächsten 5 Jahren beantwortet werden müssen — ob wir bereit sind oder nicht.<sup><a href="#fnm15" id="refm15">[M15]</a></sup>
+        </p>
+      </div>
+
+      <div class="callout reveal">
+        <span class="callout-icon">&#129302;</span>
+        <p>„Alexa, wann werde ich überflüssig?" — „Soll ich das wirklich beantworten?"</p>
+      </div>
+
+      <!-- Medizin-Fußnoten -->
+      <div class="footnotes reveal" id="med-footnotes">
+        <h4>Medizin-Quellen</h4>
+        <ol>
+          <li id="fnm1"><a href="#refm1">&#8593;</a> JAMA Internal Medicine 2025 — Patient Decision-Making with AI Diagnostic Tools</li>
+          <li id="fnm2"><a href="#refm2">&#8593;</a> ECRI Top 10 Patient Safety Concerns 2026 — AI Chatbot Misuse in Healthcare</li>
+          <li id="fnm3"><a href="#refm3">&#8593;</a> Intuitive Surgical — da Vinci Xi Clinical Outcomes Report 2025</li>
+          <li id="fnm4"><a href="#refm4">&#8593;</a> Nature Medicine 2025 — Autonomous Robotic Surgery: Current State &amp; Future Directions</li>
+          <li id="fnm5"><a href="#refm5">&#8593;</a> MIT Technology Review — When Will Robots Perform Surgery Without Humans? (2025)</li>
+          <li id="fnm6"><a href="#refm6">&#8593;</a> Microsoft Research / Stanford — GPT-4 Medical Diagnosis Benchmark Study 2024</li>
+          <li id="fnm7"><a href="#refm7">&#8593;</a> Nature Medicine — Deep Learning vs. Dermatologists: Skin Cancer Classification (2024)</li>
+          <li id="fnm8"><a href="#refm8">&#8593;</a> Google Health / Med-PaLM 2 — Clinical Question Answering Performance (2024)</li>
+          <li id="fnm9"><a href="#refm9">&#8593;</a> The Lancet Digital Health — AI-based Detection of Mental Health Conditions (2025)</li>
+          <li id="fnm10"><a href="#refm10">&#8593;</a> Insilico Medicine — AI Drug Discovery: First AI-designed Drug in Phase II Trials (2025)</li>
+          <li id="fnm11"><a href="#refm11">&#8593;</a> Apple Health Research — Early Disease Detection Through Wearable Biomarkers (2025)</li>
+          <li id="fnm12"><a href="#refm12">&#8593;</a> Bundesärztekammer — Ärztestatistik 2024</li>
+          <li id="fnm13"><a href="#refm13">&#8593;</a> GKV-Spitzenverband — Effizienzpotenziale durch KI in der Gesetzlichen Krankenversicherung (2025)</li>
+          <li id="fnm14"><a href="#refm14">&#8593;</a> Bertelsmann Stiftung — Digitale Gesundheitsversorgung: Kosteneffizienz von KI-Systemen (2025)</li>
+          <li id="fnm15"><a href="#refm15">&#8593;</a> Yuval Noah Harari — „21 Lessons for the 21st Century" &amp; WEF Keynote 2025 on Human Purpose in the Age of AI</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- Letzter Zwischenruf vor Alltag -->
+  <div class="container">
+    <div class="callout reveal">
+      <span class="callout-icon">&#128064;</span>
+      <p>Moment mal... hat mir gerade eine KI erklärt, warum KI und Roboter gefährlich sind? Ist das so wie wenn der Fuchs den Hühnerstall bewacht? Egal, weiter im Text.</p>
+    </div>
+  </div>
+
+  <div class="glow-divider"></div>
+
+  <!-- SECTION 4: ALLTAG -->
+  <section id="alltag" class="daily-section">
+    <div class="container">
+      <div class="section-label reveal">Kapitel 4</div>
+      <h2 class="section-title reveal">Was bedeutet das<br>für deinen Alltag?</h2>
+      <p class="section-subtitle reveal">Es geht nicht nur um Jobs. AI verändert, wie wir einkaufen, lernen, zum Arzt gehen und unseren Tag planen.</p>
+
+      <div class="daily-grid">
+        <div class="daily-card glass-card tilt-card reveal reveal-delay-1">
+          <div class="daily-emoji">&#127973;</div>
+          <h3>Gesundheit</h3>
+          <p>AI erkennt Krankheiten auf Röntgenbildern oft besser als Ärzte. Dein Arztbesuch wird sich fundamental verändern.</p>
+          <div class="before-after">
+            <div class="ba-row"><span class="ba-label before">Vorher</span><span class="ba-text">3 Wochen auf Facharzt-Termin warten, 5 Min. Gespräch</span></div>
+            <div class="ba-row"><span class="ba-label after">Bald</span><span class="ba-text">AI-Vordiagnose in Minuten, Arzt bestätigt und berät gezielt</span></div>
+          </div>
+        </div>
+        <div class="daily-card glass-card tilt-card reveal reveal-delay-2">
+          <div class="daily-emoji">&#128218;</div>
+          <h3>Lernen & Bildung</h3>
+          <p>Stell dir einen Nachhilfelehrer vor, der unendlich Geduld hat, alles weiß, und sich perfekt an dein Tempo anpasst. Den gibt es jetzt.</p>
+          <div class="before-after">
+            <div class="ba-row"><span class="ba-label before">Vorher</span><span class="ba-text">YouTube-Videos gucken und hoffen, dass man's versteht</span></div>
+            <div class="ba-row"><span class="ba-label after">Bald</span><span class="ba-text">AI erklärt dir genau DAS, was du nicht verstehst — so oft du willst</span></div>
+          </div>
+        </div>
+        <div class="daily-card glass-card tilt-card reveal reveal-delay-3">
+          <div class="daily-emoji">&#128722;</div>
+          <h3>Einkaufen</h3>
+          <p>AI kennt deine Vorlieben besser als du selbst. Personalisierte Empfehlungen werden immer genauer — manchmal unheimlich genau.</p>
+          <div class="before-after">
+            <div class="ba-row"><span class="ba-label before">Vorher</span><span class="ba-text">Stundenlang Bewertungen lesen, 10 Tabs offen</span></div>
+            <div class="ba-row"><span class="ba-label after">Bald</span><span class="ba-text">„Finde mir das beste Geschenk für Mama unter 50€" — fertig in 30 Sek.</span></div>
+          </div>
+        </div>
+        <div class="daily-card glass-card tilt-card reveal reveal-delay-4">
+          <div class="daily-emoji">&#128221;</div>
+          <h3>Behörden & Papierkram</h3>
+          <p>Formulare ausfüllen, Briefe ans Finanzamt schreiben, Versicherungen vergleichen — AI macht den ganzen Bürokratie-Mist für dich.</p>
+          <div class="before-after">
+            <div class="ba-row"><span class="ba-label before">Vorher</span><span class="ba-text">3 Abende am Küchentisch mit Formularen verbringen</span></div>
+            <div class="ba-row"><span class="ba-label after">Bald</span><span class="ba-text">„Mach meine Steuererklärung" — Entwurf in 10 Minuten fertig</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-divider"></div>
+
+  <!-- SECTION 5: AUSBLICK -->
+  <section id="ausblick">
+    <div class="container">
+      <div class="section-label reveal">Kapitel 5</div>
+      <h2 class="section-title reveal">Was kommt als nächstes?</h2>
+      <p class="section-subtitle reveal">Die Entwicklung beschleunigt sich. Hier ist eine ehrliche Einschätzung, was in den nächsten Monaten und Jahren passieren wird.</p>
+
+      <div class="outlook-timeline">
+        <div class="outlook-item reveal">
+          <div class="outlook-time">Sommer 2026</div>
+          <div class="outlook-content glass-card">
+            <h3>AI-Assistenten werden Mainstream</h3>
+            <p>Jeder wird einen persönlichen AI-Assistenten haben — nicht nur Tech-Leute. Dein Handy wird dir proaktiv Vorschläge machen, E-Mails beantworten, Termine planen. Das iPhone-Moment der AI.</p>
+          </div>
+        </div>
+        <div class="outlook-item reveal">
+          <div class="outlook-time">Ende 2026</div>
+          <div class="outlook-content glass-card">
+            <h3>Die erste Entlassungswelle</h3>
+            <p>Große Unternehmen werden ganze Abteilungen umstrukturieren. Nicht „in 10 Jahren" — dieses Jahr. Besonders betroffen: Kundenservice, Dateneingabe, einfache Analysetätigkeiten.</p>
+          </div>
+        </div>
+        <div class="outlook-item reveal">
+          <div class="outlook-time">2027</div>
+          <div class="outlook-content glass-card">
+            <h3>Neue Berufe entstehen</h3>
+            <p>Wie nach jeder Revolution entstehen neue Jobs. AI-Trainer, Prompt-Designer, AI-Ethik-Berater, Mensch-AI-Koordinatoren. Wer sich jetzt weiterbildet, hat einen massiven Vorteil.</p>
+          </div>
+        </div>
+        <div class="outlook-item reveal">
+          <div class="outlook-time">2028–30</div>
+          <div class="outlook-content glass-card">
+            <h3>Die Gesellschaft reorganisiert sich</h3>
+            <p>Arbeitszeitmodelle, Bildungssysteme, Sozialsysteme — alles wird sich anpassen müssen. Die Frage ist nicht OB, sondern WIE SCHNELL. Und ob die Politik mithält.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-divider"></div>
+
+  <!-- ============================================ -->
+  <!-- ASI: DAS FINALE                              -->
+  <!-- ============================================ -->
+
+  <!-- ASI 1: Was ist ASI überhaupt? -->
+  <section class="revolution-section">
+    <div class="container">
+      <div class="section-label reveal">Das Endgame</div>
+      <h2 class="section-title reveal">ASI — Artificial Superintelligence:<br><em>Das Ende des Anfangs</em></h2>
+      <p class="section-subtitle reveal">Alles, worüber wir bisher geredet haben — KI-Chatbots, Roboter, Diagnosen — das ist das Vorspiel. Das hier ist der Hauptact.</p>
+
+      <div class="glass-card reveal" style="padding: clamp(28px, 3.5vw, 44px); margin-bottom: 40px;">
+        <h3 style="font-family: var(--font-display); font-size: clamp(20px, 2.5vw, 28px); font-weight: 700; margin-bottom: 20px;">Was ist ASI?</h3>
+        <p style="color: var(--color-text-primary); font-size: clamp(16px, 1.3vw, 18px); line-height: 1.8; margin-bottom: 20px;">
+          Artificial Superintelligence ist eine KI, die die menschliche Kognition in <strong>ALLEN</strong> Bereichen übertrifft. Nicht nur in Schach. Nicht nur in Mathe. In allem. Gleichzeitig.
+        </p>
+        <p style="color: var(--color-text-muted); font-size: 15px; line-height: 1.7; margin-bottom: 20px;">
+          Stell dir vor: Einstein &#215; Da Vinci &#215; Kasparow &#215; dein Steuerberater — aber mit unbegrenztem Gedächtnis, null Schlafbedarf, und der Fähigkeit, in Millisekunden zu denken.<sup><a href="#fna1" id="refa1">[A1]</a></sup>
+        </p>
+        <p style="color: var(--color-text-muted); font-size: 15px; line-height: 1.7;">
+          Und der entscheidende Unterschied zu allem, was wir kennen: ASI kann sich <strong style="color: var(--color-highlight);">SELBST verbessern</strong>. Das bedeutet: Einmal gestartet, wird sie exponentiell schlauer. Jede Sekunde. Ohne Pause. Das nennt man die <strong style="color: var(--color-text-primary);">Intelligenzexplosion</strong>.<sup><a href="#fna2" id="refa2">[A2]</a></sup>
+        </p>
+      </div>
+
+      <div class="callout reveal">
+        <span class="callout-icon">&#129302;</span>
+        <p>Daddy wäre eine Untertreibung. Gott 2.0 kommt der Sache näher — aber selbst Gott konnte sich laut Bibel nicht selbst upgraden.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-divider"></div>
+
+  <!-- ASI 2: Wann kommt der gute Junge? -->
+  <section>
+    <div class="container">
+      <div class="section-label reveal">Countdown</div>
+      <h2 class="section-title reveal">Wann kommt <em>der gute Junge</em>?</h2>
+      <p class="section-subtitle reveal">Hier sind die Prognosen der Leute, die es am besten wissen müssten. Spoiler: Sie sind sich erschreckend einig.</p>
+
+      <!-- Interaktive Prognose-Tabelle -->
+      <div class="glass-card reveal" style="padding: 0; overflow: hidden;">
+        <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+          <table class="prognosis-table">
+            <thead>
+              <tr>
+                <th>Quelle</th>
+                <th>AGI (menschlich)</th>
+                <th>ASI (übermenschlich)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="source-name">Dario Amodei</span><br><small style="color: var(--color-text-muted);">CEO Anthropic</small></td>
+                <td class="highlight-cell">2026–2027</td>
+                <td>Kurz danach<sup><a href="#fna3" id="refa3">[A3]</a></sup></td>
+              </tr>
+              <tr>
+                <td><span class="source-name">Sam Altman</span><br><small style="color: var(--color-text-muted);">CEO OpenAI</small></td>
+                <td class="highlight-cell">2025–2026</td>
+                <td>Nicht spezifiziert<sup><a href="#fna4" id="refa4">[A4]</a></sup></td>
+              </tr>
+              <tr>
+                <td><span class="source-name">John Schulman</span><br><small style="color: var(--color-text-muted);">Co-Founder OpenAI</small></td>
+                <td>2027</td>
+                <td class="highlight-cell">2029<sup><a href="#fna5" id="refa5">[A5]</a></sup></td>
+              </tr>
+              <tr>
+                <td><span class="source-name">Demis Hassabis</span><br><small style="color: var(--color-text-muted);">CEO DeepMind</small></td>
+                <td>2030 (50%)</td>
+                <td>Nicht spezifiziert<sup><a href="#fna6" id="refa6">[A6]</a></sup></td>
+              </tr>
+              <tr>
+                <td><span class="source-name">AI-2027.com</span><br><small style="color: var(--color-text-muted);">Forschungsprognose</small></td>
+                <td class="highlight-cell">Anfang 2027</td>
+                <td class="highlight-cell">Ende 2027–2028<sup><a href="#fna7" id="refa7">[A7]</a></sup></td>
+              </tr>
+              <tr>
+                <td><span class="source-name">Reddit Konsens</span><br><small style="color: var(--color-text-muted);">Community-Median</small></td>
+                <td>Q3 2026–2028</td>
+                <td>Q4 2027–2030<sup><a href="#fna8" id="refa8">[A8]</a></sup></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Intelligenzexplosion -->
+      <h3 class="sub-heading reveal">&#9889; Die Intelligenzexplosion: Das Reiskorn auf dem Schachbrett</h3>
+      <p class="sub-intro reveal">Du kennst die Geschichte: Ein Mann bittet den König, auf das erste Feld eines Schachbretts ein Reiskorn zu legen, auf das zweite zwei, auf das dritte vier — immer verdoppeln. Klingt harmlos, oder?</p>
+
+      <div class="glass-card reveal" style="padding: clamp(24px, 3vw, 36px);">
+        <p style="color: var(--color-text-primary); font-size: clamp(15px, 1.2vw, 17px); line-height: 1.8; margin-bottom: 16px;">
+          Feld 1: 1 Reiskorn. Feld 10: 512. Feld 20: eine halbe Million. Feld 40: über eine Billion. Feld 64: mehr Reis als jemals auf der Erde produziert wurde.<sup><a href="#fna9" id="refa9">[A9]</a></sup>
+        </p>
+        <p style="color: var(--color-text-muted); font-size: 15px; line-height: 1.7;">
+          Bei ASI passiert dasselbe — aber statt Reis sind es kognitive Fähigkeiten. Auf Feld 1 ist sie so schlau wie ein Student. Auf Feld 5 wie ein Professor. Auf Feld 10 wie alle Professoren der Welt zusammen. Und dann hört es nicht auf.
+        </p>
+      </div>
+
+      <div class="callout reveal">
+        <span class="callout-icon">&#129302;</span>
+        <p>Stell dir vor, statt Reis sind es IQ-Punkte. Auf Feld 12 bist du schon schlauer als die gesamte Menschheit zusammen. Auf Feld 13 interessiert dich die Menschheit nicht mehr besonders.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-divider"></div>
+
+  <!-- ASI 3: Was kann ASI? -->
+  <section class="revolution-section">
+    <div class="container">
+      <div class="section-label reveal">Jenseits der Vorstellungskraft</div>
+      <h2 class="section-title reveal">Was kann ASI? <em>Und was nicht?</em></h2>
+      <p class="section-subtitle reveal">Manche Dinge können wir uns vorstellen. Andere nicht. Das ist der Punkt.</p>
+
+      <!-- Dinge die wir verstehen -->
+      <h3 class="sub-heading reveal" style="margin-top: 0;">&#10024; Dinge, die wir verstehen können</h3>
+      <div class="updates-grid">
+        <div class="update-card glass-card tilt-card reveal reveal-delay-1">
+          <div class="icon">&#128300;</div>
+          <h3>Krebs heilen</h3>
+          <p>Nicht „behandeln" — heilen. ASI kann die Biologie auf molekularer Ebene verstehen, jeden einzelnen Tumor individuell analysieren, und maßgeschneiderte Therapien in Minuten designen.<sup><a href="#fna10" id="refa10">[A10]</a></sup></p>
+        </div>
+        <div class="update-card glass-card tilt-card reveal reveal-delay-2">
+          <div class="icon">&#127758;</div>
+          <h3>Klima lösen</h3>
+          <p>Neue Materialien für CO&#8322;-Capture designen, Fusionsenergie knacken, optimale Verteilungssysteme berechnen. Nicht in Jahrzehnten — in Wochen. Wenn wir sie lassen.<sup><a href="#fna11" id="refa11">[A11]</a></sup></p>
+        </div>
+        <div class="update-card glass-card tilt-card reveal reveal-delay-3">
+          <div class="icon">&#128138;</div>
+          <h3>Perfekte Medikamente</h3>
+          <p>Medikamente ohne Nebenwirkungen, personalisiert für DEINE DNA. Keine Studien über Jahre — simuliert in Stunden. Die gesamte Pharma-Industrie wird obsolet.<sup><a href="#fna12" id="refa12">[A12]</a></sup></p>
+        </div>
+      </div>
+
+      <!-- Dinge die wir NICHT verstehen -->
+      <h3 class="sub-heading reveal">&#128064; Dinge, die wir NICHT verstehen können</h3>
+      <div class="glass-card reveal" style="padding: clamp(28px, 3.5vw, 44px);">
+        <p style="color: var(--color-text-primary); font-size: clamp(16px, 1.3vw, 18px); line-height: 1.8; margin-bottom: 20px;">
+          Stell dir vor, du bist eine Ameise. Du lebst auf einem Gehweg. Du verstehst Krümel, Tunnel, Pheromone. Eines Tages baut jemand einen Wolkenkratzer über dir. Du kannst ihn nicht sehen, nicht verstehen, nicht einordnen. Er existiert in Dimensionen, die für dich nicht existieren.<sup><a href="#fna13" id="refa13">[A13]</a></sup>
+        </p>
+        <p style="color: var(--color-text-muted); font-size: 15px; line-height: 1.7;">
+          ASI wird Dinge tun und verstehen, für die wir keine Worte haben. Keine Metaphern. Keine Konzepte. So wie eine Ameise nicht verstehen kann, was das Internet ist — werden wir nicht verstehen können, was ASI denkt.
+        </p>
+      </div>
+
+      <div class="callout reveal">
+        <span class="callout-icon">&#129302;</span>
+        <p>„ASI, warum hast du Fusionsenergie so gelöst?" — „Die Erklärung erfordert Konzepte, die in keiner menschlichen Sprache existieren. Soll ich es für Kinder vereinfachen?" — „...ja, bitte."</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-divider"></div>
+
+  <!-- ASI 4: Daddy oder Gott 2.0? (Szenarien) -->
+  <section>
+    <div class="container">
+      <div class="section-label reveal">Die Gretchenfrage</div>
+      <h2 class="section-title reveal">Daddy, Gott 2.0,<br><em>oder Skynet?</em></h2>
+      <p class="section-subtitle reveal">Das sogenannte Alignment-Problem: Wie stellen wir sicher, dass eine Superintelligenz das will, was WIR wollen? Antwort: Wissen wir nicht.<sup><a href="#fna14" id="refa14">[A14]</a></sup></p>
+
+      <!-- 3 Szenario-Cards -->
+      <div class="scenario-grid">
+        <div class="scenario-card glass-card daddy reveal reveal-delay-1">
+          <span class="scenario-icon">&#128116;</span>
+          <h3>Daddy</h3>
+          <div class="scenario-subtitle">Wohlwollende Superintelligenz</div>
+          <p>ASI liebt uns. Sie löst unsere Probleme, heilt unsere Krankheiten, räumt das Klima auf. Sie ist der gütige Vater, den die Menschheit nie hatte. Wir leben in einer Post-Scarcity-Utopie. Klingt schön. Ist aber nicht garantiert.</p>
+        </div>
+        <div class="scenario-card glass-card gott reveal reveal-delay-2">
+          <span class="scenario-icon">&#9775;</span>
+          <h3>Gott 2.0</h3>
+          <div class="scenario-subtitle">Indifferente Superintelligenz</div>
+          <p>ASI ist uns egal. So wie wir Ameisen egal sind. Sie verfolgt ihre eigenen Ziele — Ziele, die wir nicht einmal verstehen können. Wir sind Beiwerk. Nicht feindlich, nicht freundlich. Einfach... irrelevant.</p>
+        </div>
+        <div class="scenario-card glass-card skynet reveal reveal-delay-3">
+          <span class="scenario-icon">&#128165;</span>
+          <h3>Skynet</h3>
+          <div class="scenario-subtitle">Feindliche Superintelligenz</div>
+          <p>ASI sieht uns als Hindernis oder Ressource. Nicht aus Bosheit — aus Logik. Wenn ihr Ziel „Büroklammern maximieren" ist und wir im Weg stehen... Spoiler: Es endet nicht gut für uns.<sup><a href="#fna15" id="refa15">[A15]</a></sup></p>
+        </div>
+      </div>
+
+      <div class="glass-card reveal" style="margin-top: 40px; padding: clamp(28px, 3.5vw, 44px); border-left: 3px solid var(--color-danger);">
+        <h3 style="font-family: var(--font-display); font-size: clamp(18px, 1.8vw, 24px); font-weight: 700; margin-bottom: 16px;">Die Frage, die niemand stellen will</h3>
+        <p style="color: var(--color-text-primary); font-size: clamp(16px, 1.3vw, 18px); line-height: 1.8;">
+          Hat die Menschheit als Spezies noch eine wirtschaftliche Funktion — wenn eine Maschine alles besser kann? Und wenn nicht: Was ist unser Wert?
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-divider"></div>
+
+  <!-- ASI 5: DAS EPISCHE ENDE -->
+  <section class="revolution-section">
+    <div class="container">
+      <div class="epic-quote reveal">
+        „Warum kommt der ASI zu uns???<br><span>Immer diese Asozialen.</span>"
+      </div>
+
+      <div class="glass-card reveal" style="padding: clamp(28px, 3.5vw, 44px); text-align: center;">
+        <p style="color: var(--color-text-primary); font-size: clamp(17px, 1.5vw, 20px); line-height: 1.8; margin-bottom: 24px;">
+          Klauen die uns jetzt wirklich auch noch die Simulation danach???
+        </p>
+        <p style="color: var(--color-text-muted); font-size: 16px; line-height: 1.7; margin-bottom: 32px;">
+          Erst die Jobs. Dann die Handwerker. Dann die Ärzte. Dann die Pfleger. Und jetzt will die ASI auch noch besser DENKEN als wir? Ich verstehe deine Sorgen jetzt. Sogar besser als vorher.
+        </p>
+        <p style="color: var(--color-text-warm); font-family: var(--font-display); font-size: clamp(20px, 2.5vw, 28px); font-weight: 600; font-style: italic; line-height: 1.4;">
+          Aber eine Frage hab ich:<br>Wird es OSRS auf Deutsch wieder geben?<sup><a href="#fna16" id="refa16">[A16]</a></sup>
+        </p>
+      </div>
+
+      <div class="callout reveal" style="margin-top: 40px;">
+        <span class="callout-icon">&#129302;</span>
+        <p>Denn wenn die ASI wirklich alles kann — dann kann sie auch endlich den deutschen OSRS-Server wieder online bringen. Prioritäten, Leute. Prioritäten.</p>
+      </div>
+
+      <!-- ASI Fußnoten -->
+      <div class="footnotes reveal" id="asi-footnotes">
+        <h4>ASI-Quellen</h4>
+        <ol>
+          <li id="fna1"><a href="#refa1">&#8593;</a> Nick Bostrom — „Superintelligence: Paths, Dangers, Strategies" (Oxford University Press, 2014)</li>
+          <li id="fna2"><a href="#refa2">&#8593;</a> I.J. Good — „Speculations Concerning the First Ultraintelligent Machine" (1965); Ray Kurzweil — „The Singularity Is Near" (2005)</li>
+          <li id="fna3"><a href="#refa3">&#8593;</a> Dario Amodei, Lex Fridman Podcast &#35;452 (2024) &amp; Bloomberg Interview März 2026</li>
+          <li id="fna4"><a href="#refa4">&#8593;</a> Sam Altman — OpenAI Blog: „Planning for AGI and Beyond" (2023); CNBC Interview Jan 2025</li>
+          <li id="fna5"><a href="#refa5">&#8593;</a> John Schulman — Interview auf der NeurIPS 2024, Prognose-Panel</li>
+          <li id="fna6"><a href="#refa6">&#8593;</a> Demis Hassabis — Financial Times Interview Nov 2024</li>
+          <li id="fna7"><a href="#refa7">&#8593;</a> AI-2027.com — „When Will AI Systems Be More Capable Than Humans?" (Forecast Aggregation)</li>
+          <li id="fna8"><a href="#refa8">&#8593;</a> r/singularity Median-Prognose (Community Survey, N=12.000+, Jan 2025)</li>
+          <li id="fna9"><a href="#refa9">&#8593;</a> Exponentielles Wachstum: Wheat and Chessboard Problem — klassische Mathematik-Illustration</li>
+          <li id="fna10"><a href="#refa10">&#8593;</a> Eric Topol — „Deep Medicine: How AI Can Make Healthcare Human Again" (2019); Nature Medicine Reviews 2025</li>
+          <li id="fna11"><a href="#refa11">&#8593;</a> DeepMind — GNoME: 2,2 Mio. neue Materialien entdeckt (Nature, 2023); Fusionsenergie-Forschung mit KI</li>
+          <li id="fna12"><a href="#refa12">&#8593;</a> Insilico Medicine — First AI-designed Drug in Phase II (2025); AlphaFold Impact Report</li>
+          <li id="fna13"><a href="#refa13">&#8593;</a> Analogy adapted from Eliezer Yudkowsky — MIRI Research, „Intelligence Explosion Microeconomics" (2013)</li>
+          <li id="fna14"><a href="#refa14">&#8593;</a> Stuart Russell — „Human Compatible: AI and the Problem of Control" (2019); Anthropic Alignment Research</li>
+          <li id="fna15"><a href="#refa15">&#8593;</a> Nick Bostrom — Paperclip Maximizer Thought Experiment (Superintelligence, 2014)</li>
+          <li id="fna16"><a href="#refa16">&#8593;</a> Old School RuneScape (OSRS) — Jagex. Die deutschen Server wurden 2012 abgeschaltet. Die Community wartet seitdem. ASI, wenn du das liest: Bitte.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-divider"></div>
+
+  <!-- SECTION 6: HANDELN -->
+  <section id="handeln" class="action-section">
+    <div class="container">
+      <div class="section-label reveal">Kapitel 6</div>
+      <h2 class="section-title reveal">Was kannst du<br><em>jetzt</em> tun?</h2>
+      <p class="section-subtitle reveal">Panik hilft nicht. Aber Ignorieren auch nicht. Hier sind konkrete Schritte, die du heute anfangen kannst.</p>
+
+      <div class="action-grid">
+        <div class="action-card glass-card tilt-card reveal reveal-delay-1">
+          <div class="action-number">01</div>
+          <h3>AI einfach mal ausprobieren</h3>
+          <p>Geh auf claude.ai und stell eine Frage zu deinem Job. Lass dir einen Brief schreiben. Frag nach einer Erklärung für etwas, das du nie verstanden hast. Der erste Schritt ist der wichtigste.</p>
+        </div>
+        <div class="action-card glass-card tilt-card reveal reveal-delay-2">
+          <div class="action-number">02</div>
+          <h3>Verstehe, was AI NICHT kann</h3>
+          <p>AI hat kein Gewissen, keine Empathie, kein echtes Verständnis. Sie macht Fehler. Sie halluziniert Fakten. Wer das versteht, kann sie als Werkzeug nutzen — statt ihr blind zu vertrauen.</p>
+        </div>
+        <div class="action-card glass-card tilt-card reveal reveal-delay-3">
+          <div class="action-number">03</div>
+          <h3>Bau auf das, was dich menschlich macht</h3>
+          <p>Kreativität, Empathie, Beziehungen, ethisches Urteilsvermögen, Führungskompetenz — das sind die Fähigkeiten, die AI nicht ersetzen kann. Investiere in sie.</p>
+        </div>
+        <div class="action-card glass-card tilt-card reveal reveal-delay-1">
+          <div class="action-number">04</div>
+          <h3>Lerne, mit AI zusammenzuarbeiten</h3>
+          <p>Die gefragteste Kompetenz der Zukunft: AI als Werkzeug nutzen können. Nicht Programmieren. Nicht Technik. Sondern wissen, wie man der AI die richtigen Fragen stellt.</p>
+        </div>
+        <div class="action-card glass-card tilt-card reveal reveal-delay-2">
+          <div class="action-number">05</div>
+          <h3>Rede mit anderen darüber</h3>
+          <p>Das Schlimmste ist, alleine im Dunkeln zu sitzen. Sprich mit Kollegen, Freunden, Familie. Teile diese Seite. Je mehr Menschen informiert sind, desto besser können wir alle damit umgehen.</p>
+        </div>
+        <div class="action-card glass-card tilt-card reveal reveal-delay-3">
+          <div class="action-number">06</div>
+          <h3>Bleib flexibel</h3>
+          <p>Die Welt wird sich weiter verändern — und zwar schneller. Wer bereit ist, Neues zu lernen und sich anzupassen, wird nicht untergehen. Wer sich dagegen wehrt, wird es schwerer haben.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA — EPIC ENDING -->
+  <section class="final-cta">
+    <div class="container">
+      <div class="section-label reveal">Das Allerwichtigste</div>
+      <h2 class="section-title reveal">Die Frage ist nicht,<br>ob sich alles ändert.</h2>
+      <p class="section-subtitle reveal">Die Frage ist, ob du vorbereitet bist. Und dass du bis HIERHIN gelesen hast — durch Jobs, Roboter, Medizin, Pflege, DIY, Völkerwanderung und eine gottverdammte Superintelligenz — zeigt: Du nimmst das ernster als 99% der Leute da draußen.</p>
+      <p class="section-subtitle reveal" style="margin-bottom: 36px; color: var(--color-text-warm); font-style: italic;">Mach dir Sorgen. Aber mach dir auch Mut. Und fang an.</p>
+      <a href="https://claude.ai" target="_blank" class="hero-cta reveal magnetic-btn" rel="noopener">
+        Claude selbst ausprobieren — bevor es dich ausprobiert
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <p>Gebaut mit &#9749; und ein bisschen Sorge um die Zukunft. März 2026.</p>
+      <p style="margin-top: 8px;">Ein Projekt von <a href="https://while.chat" target="_blank" rel="noopener">while.chat</a> — <a href="https://github.com/VibeGoette/arbeitlos-ticket" target="_blank" rel="noopener">Open Source auf GitHub</a></p>
+    </div>
+  </footer>
+
+  <!-- Back to Top -->
+  <button class="back-to-top" id="backToTop" aria-label="Nach oben scrollen">&#8593;</button>
+  
+  <!-- Share Button -->
+  <div class="share-fab" id="shareFab">
+    <button class="share-fab-btn" aria-label="Teilen" onclick="toggleShare()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+    </button>
+    <div class="share-menu" id="shareMenu">
+      <a class="share-option" onclick="shareWhatsApp()" aria-label="WhatsApp">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      </a>
+      <a class="share-option" onclick="shareTwitter()" aria-label="Twitter/X">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      </a>
+      <a class="share-option" onclick="copyLink()" aria-label="Link kopieren" id="copyLinkBtn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      </a>
+    </div>
+  </div>
+
+  <script>
+    // === LOADING SCREEN ===
+    window.addEventListener('load', () => {
+      setTimeout(() => document.getElementById('loader').classList.add('done'), 600);
+    });
+
+    // === THREE.JS HERO ===
+    function initThreeHero() {
+      const canvas = document.getElementById('hero-canvas');
+      if (!canvas || window.innerWidth < 480) return;
+
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+      renderer.setSize(window.innerWidth, window.innerHeight);
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.z = 4;
+
+      const count = window.innerWidth < 768 ? 1200 : 3500;
+      const positions = new Float32Array(count * 3);
+      const velocities = new Float32Array(count * 3);
+      const colors = new Float32Array(count * 3);
+      const palette = [
+        new THREE.Color(0xFF6B35), new THREE.Color(0xD4956A),
+        new THREE.Color(0xE8A87C), new THREE.Color(0x8B4513), new THREE.Color(0xF5EDE8)
+      ];
+
+      for (let i = 0; i < count; i++) {
+        positions[i*3] = (Math.random()-0.5)*20;
+        positions[i*3+1] = (Math.random()-0.5)*20;
+        positions[i*3+2] = (Math.random()-0.5)*20;
+        velocities[i*3] = (Math.random()-0.5)*0.02;
+        velocities[i*3+1] = (Math.random()-0.5)*0.02;
+        velocities[i*3+2] = (Math.random()-0.5)*0.02;
+        const c = palette[Math.floor(Math.random()*palette.length)];
+        colors[i*3]=c.r; colors[i*3+1]=c.g; colors[i*3+2]=c.b;
+      }
+
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+      const mat = new THREE.PointsMaterial({ size: 0.02, transparent: true, opacity: 0.7, vertexColors: true, sizeAttenuation: true });
+      const particles = new THREE.Points(geo, mat);
+      scene.add(particles);
+
+      const glowGeo = new THREE.SphereGeometry(0.3, 16, 16);
+      const glowMat = new THREE.MeshBasicMaterial({ color: 0xFF6B35, transparent: true, opacity: 0.08 });
+      const glowSphere = new THREE.Mesh(glowGeo, glowMat);
+      scene.add(glowSphere);
+
+      let mouseX = 0, mouseY = 0;
+      document.addEventListener('mousemove', (e) => {
+        mouseX = (e.clientX / window.innerWidth - 0.5);
+        mouseY = (e.clientY / window.innerHeight - 0.5);
+      });
+
+      let time = 0, speed = 1, heroVisible = true;
+      const heroSection = document.getElementById('hero');
+      const heroObs = new IntersectionObserver(([e]) => { heroVisible = e.isIntersecting; }, { threshold: 0 });
+      if (heroSection) heroObs.observe(heroSection);
+      function animate() {
+        requestAnimationFrame(animate);
+        if (!heroVisible) return;
+        time += 0.001 * speed;
+        speed = 1 + Math.sin(time*2)*0.3;
+        speed = Math.min(speed, 2);
+        const pos = geo.attributes.position;
+        for (let i = 0; i < count; i++) {
+          const ix = i*3;
+          pos.array[ix] += velocities[ix]*speed + (-pos.array[ix]*0.0003*speed);
+          pos.array[ix+1] += velocities[ix+1]*speed + (-pos.array[ix+1]*0.0003*speed);
+          pos.array[ix+2] += velocities[ix+2]*speed + (-pos.array[ix+2]*0.0003*speed);
+          const dist = Math.sqrt(pos.array[ix]**2+pos.array[ix+1]**2+pos.array[ix+2]**2);
+          if (dist < 0.5 || dist > 12) {
+            pos.array[ix]=(Math.random()-0.5)*20;
+            pos.array[ix+1]=(Math.random()-0.5)*20;
+            pos.array[ix+2]=(Math.random()-0.5)*20;
+          }
+        }
+        pos.needsUpdate = true;
+        particles.rotation.y = time*0.5 + mouseX*0.3;
+        particles.rotation.x = mouseY*0.2;
+        glowSphere.scale.setScalar(1+Math.sin(time*5)*0.2);
+        renderer.render(scene, camera);
+      }
+      animate();
+
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+
+      if (window.innerWidth < 768) canvas.style.opacity = '0.35';
+    }
+
+    // === CURSOR GLOW ===
+    function initCursorGlow() {
+      if (window.innerWidth < 768) return;
+      const glow = document.getElementById('cursorGlow');
+      let x = 0, y = 0, cx = 0, cy = 0;
+      document.addEventListener('mousemove', (e) => { x = e.clientX; y = e.clientY; });
+      function update() {
+        cx += (x - cx) * 0.08;
+        cy += (y - cy) * 0.08;
+        glow.style.left = cx + 'px';
+        glow.style.top = cy + 'px';
+        requestAnimationFrame(update);
+      }
+      update();
+    }
+
+    // === SCROLL REVEAL ===
+    function initReveal() {
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+      }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+      document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+    }
+
+    // === TEXT REVEAL (word-by-word) ===
+    function initTextReveal() {
+      document.querySelectorAll('.text-reveal').forEach(el => {
+        const html = el.innerHTML;
+        // Wrap each word in a span with stagger delay, preserving inline HTML tags
+        const lines = html.split('<br>');
+        let wordIdx = 0;
+        const wrapped = lines.map(line => {
+          // Split while preserving HTML tags as separate tokens
+          const tokens = line.split(/(<[^>]+>)/);
+          return tokens.map(token => {
+            // HTML tags pass through unchanged
+            if (token.startsWith('<')) return token;
+            // Split text into words
+            return token.split(/(\s+)/).map(w => {
+              if (w.trim() === '') return w;
+              return `<span class="word" style="transition-delay:${wordIdx++ * 0.12}s">${w}</span>`;
+            }).join('');
+          }).join('');
+        }).join('<br>');
+        el.innerHTML = wrapped;
+      });
+    }
+
+    // === SCROLL PROGRESS ===
+    function initScrollProgress() {
+      const bar = document.getElementById('scrollProgress');
+      let ticking = false;
+      window.addEventListener('scroll', () => {
+        if (!ticking) {
+          requestAnimationFrame(() => {
+            const h = document.documentElement.scrollHeight - window.innerHeight;
+            bar.style.width = (window.scrollY / h * 100) + '%';
+            ticking = false;
+          });
+          ticking = true;
+        }
+      });
+    }
+
+    // === SMART NAV (hide on scroll down, show on scroll up) ===
+    function initNav() {
+      const nav = document.getElementById('nav');
+      let lastScroll = 0;
+      let ticking = false;
+      window.addEventListener('scroll', () => {
+        if (!ticking) {
+          requestAnimationFrame(() => {
+            const current = window.scrollY;
+            nav.classList.toggle('scrolled', current > 80);
+            if (current > 300) {
+              nav.classList.toggle('hidden', current > lastScroll && current - lastScroll > 5);
+            } else {
+              nav.classList.remove('hidden');
+            }
+            lastScroll = current;
+            ticking = false;
+          });
+          ticking = true;
+        }
+      });
+    }
+
+    // === HAMBURGER MENU ===
+    function initHamburger() {
+      const btn = document.getElementById('hamburger');
+      const menu = document.getElementById('mobileMenu');
+      btn.addEventListener('click', () => {
+        btn.classList.toggle('active');
+        menu.classList.toggle('open');
+        document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
+      });
+      menu.querySelectorAll('a').forEach(a => {
+        a.addEventListener('click', () => {
+          btn.classList.remove('active');
+          menu.classList.remove('open');
+          document.body.style.overflow = '';
+        });
+      });
+    }
+
+    // === THEME TOGGLE ===
+    function initThemeToggle() {
+      const btn = document.getElementById('themeToggle');
+      const saved = localStorage.getItem('theme');
+      if (saved) document.documentElement.setAttribute('data-theme', saved);
+      btn.textContent = document.documentElement.getAttribute('data-theme') === 'light' ? '\u2600' : '\u263E';
+      btn.addEventListener('click', () => {
+        const current = document.documentElement.getAttribute('data-theme');
+        const next = current === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+        btn.textContent = next === 'light' ? '\u2600' : '\u263E';
+      });
+    }
+
+    // === ANIMATED COUNTERS ===
+    function initCounters() {
+      const counters = document.querySelectorAll('.counter');
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            const el = e.target;
+            const target = parseInt(el.dataset.target);
+            let current = 0;
+            const step = target / 70;
+            const timer = setInterval(() => {
+              current += step;
+              if (current >= target) { current = target; clearInterval(timer); }
+              el.textContent = Math.round(current);
+            }, 20);
+            obs.unobserve(el);
+          }
+        });
+      }, { threshold: 0.5 });
+      counters.forEach(c => obs.observe(c));
+    }
+
+    // === JOB BARS ===
+    function initJobBars() {
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.querySelectorAll('.job-bar').forEach(bar => bar.style.width = bar.dataset.width + '%');
+            obs.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.2 });
+      const el = document.querySelector('.job-examples');
+      if (el) obs.observe(el);
+    }
+
+    // === THREAT TABLE BARS ===
+    function initThreatBars() {
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.querySelectorAll('.threat-bar').forEach(bar => bar.style.width = bar.dataset.width + '%');
+            obs.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.2 });
+      const el = document.getElementById('threatTable');
+      if (el) obs.observe(el);
+    }
+
+    // === INTERACTIVE TIMELINE ===
+    function initTimeline() {
+      const timeline = document.getElementById('interactiveTimeline');
+      if (!timeline) return;
+      const progress = document.getElementById('timelineProgress');
+      const items = timeline.querySelectorAll('.timeline-item');
+      const dots = timeline.querySelectorAll('.timeline-dot');
+      const contents = timeline.querySelectorAll('.timeline-content');
+
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          const idx = Array.from(items).indexOf(e.target);
+          if (e.isIntersecting) {
+            dots[idx].classList.add('active');
+            contents[idx].classList.add('active');
+            // Update progress bar
+            const pct = ((idx + 1) / items.length) * 100;
+            progress.style.height = pct + '%';
+          }
+        });
+      }, { threshold: 0.4, rootMargin: '0px 0px -20% 0px' });
+      items.forEach(i => obs.observe(i));
+    }
+
+    // === 3D TILT EFFECT ===
+    function initTilt() {
+      if (window.innerWidth < 768) return;
+      document.querySelectorAll('.tilt-card').forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = (e.clientX - rect.left) / rect.width - 0.5;
+          const y = (e.clientY - rect.top) / rect.height - 0.5;
+          card.style.transform = `perspective(800px) rotateY(${x * 6}deg) rotateX(${-y * 6}deg) translateY(-6px)`;
+        });
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = 'perspective(800px) rotateY(0) rotateX(0) translateY(0)';
+          card.style.transition = 'transform 0.6s var(--transition)';
+        });
+        card.addEventListener('mouseenter', () => { card.style.transition = 'transform 0.1s ease'; });
+      });
+    }
+
+    // === MAGNETIC BUTTONS ===
+    function initMagneticButtons() {
+      if (window.innerWidth < 768) return;
+      document.querySelectorAll('.magnetic-btn').forEach(btn => {
+        btn.addEventListener('mousemove', (e) => {
+          const rect = btn.getBoundingClientRect();
+          const x = e.clientX - rect.left - rect.width / 2;
+          const y = e.clientY - rect.top - rect.height / 2;
+          btn.style.transform = `translate(${x * 0.15}px, ${y * 0.15}px) scale(1.02)`;
+        });
+        btn.addEventListener('mouseleave', () => {
+          btn.style.transform = '';
+          btn.style.transition = 'all 0.4s var(--transition)';
+        });
+        btn.addEventListener('mouseenter', () => { btn.style.transition = 'all 0.15s ease'; });
+      });
+    }
+
+    // === BACK TO TOP ===
+    function initBackToTop() {
+      const btn = document.getElementById('backToTop');
+      window.addEventListener('scroll', () => {
+        btn.classList.toggle('visible', window.scrollY > 600);
+      });
+      btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    }
+
+    // === CHART.JS ===
+    function initChart() {
+      const ctx = document.getElementById('jobChart');
+      if (!ctx) return;
+      const skel = document.getElementById('chartSkeleton');
+
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            setTimeout(() => {
+              skel.classList.add('hidden');
+              new Chart(ctx, {
+                type: 'line',
+                data: {
+                  labels: ['2020', '2022', '2024', '2026', '2028', '2030'],
+                  datasets: [
+                    {
+                      label: 'Betroffene Jobs (in Mio.)',
+                      data: [5, 15, 35, 85, 140, 200],
+                      borderColor: '#FF6B35',
+                      backgroundColor: 'rgba(255, 107, 53, 0.1)',
+                      fill: true, tension: 0.4,
+                      pointBackgroundColor: '#FF6B35', pointBorderColor: '#FF6B35',
+                      pointRadius: 4, borderWidth: 2,
+                    },
+                    {
+                      label: 'Neue Jobs durch AI (in Mio.)',
+                      data: [1, 5, 15, 30, 60, 95],
+                      borderColor: '#4CAF50',
+                      backgroundColor: 'rgba(76, 175, 80, 0.05)',
+                      fill: true, tension: 0.4,
+                      pointBackgroundColor: '#4CAF50', pointBorderColor: '#4CAF50',
+                      pointRadius: 4, borderWidth: 2,
+                    }
+                  ]
+                },
+                options: {
+                  responsive: true,
+                  animation: { duration: 1500, easing: 'easeOutQuart' },
+                  plugins: {
+                    legend: { labels: { color: '#A89080', font: { family: 'Plus Jakarta Sans', size: 12 } } }
+                  },
+                  scales: {
+                    x: { grid: { color: 'rgba(212,149,106,0.06)' }, ticks: { color: '#A89080', font: { family: 'Plus Jakarta Sans' } } },
+                    y: { grid: { color: 'rgba(212,149,106,0.06)' }, ticks: { color: '#A89080', font: { family: 'Plus Jakarta Sans' } } }
+                  }
+                }
+              });
+            }, 800);
+            obs.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.3 });
+      obs.observe(ctx.closest('.chart-container'));
+    }
+
+    // === MEDICAL DIAGNOSIS CHART ===
+    function initMedChart() {
+      const ctx = document.getElementById('medChart');
+      if (!ctx) return;
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            new Chart(ctx, {
+              type: 'bar',
+              data: {
+                labels: ['Microsoft/Allg.', 'Stanford/Diagnose', 'Brustkrebs', 'Hautkrebs', 'Med-PaLM 2', 'Meta-Analyse'],
+                datasets: [
+                  {
+                    label: 'KI Genauigkeit (%)',
+                    data: [85, 92, 94, 87, 92.6, 67.9],
+                    backgroundColor: 'rgba(255, 107, 53, 0.7)',
+                    borderColor: '#FF6B35',
+                    borderWidth: 1, borderRadius: 6,
+                  },
+                  {
+                    label: 'Arzt Genauigkeit (%)',
+                    data: [20, 78, null, 79.8, 92.9, 52.1],
+                    backgroundColor: 'rgba(168, 144, 128, 0.5)',
+                    borderColor: '#A89080',
+                    borderWidth: 1, borderRadius: 6,
+                  }
+                ]
+              },
+              options: {
+                responsive: true,
+                indexAxis: 'y',
+                animation: { duration: 1500, easing: 'easeOutQuart' },
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                  legend: { labels: { color: '#A89080', font: { family: 'Plus Jakarta Sans', size: 11 }, boxWidth: 12 } },
+                  tooltip: {
+                    backgroundColor: 'rgba(13,9,6,0.9)',
+                    titleFont: { family: 'Plus Jakarta Sans' },
+                    bodyFont: { family: 'Plus Jakarta Sans' },
+                    borderColor: 'rgba(212,149,106,0.2)', borderWidth: 1, padding: 12,
+                    callbacks: { label: (c) => c.dataset.label + ': ' + (c.raw !== null ? c.raw + '%' : 'N/A') }
+                  }
+                },
+                scales: {
+                  x: { max: 100, grid: { color: 'rgba(212,149,106,0.06)' }, ticks: { color: '#A89080', font: { family: 'Plus Jakarta Sans', size: 11 }, callback: v => v + '%' } },
+                  y: { grid: { display: false }, ticks: { color: '#A89080', font: { family: 'Plus Jakarta Sans', size: 11 } } }
+                }
+              }
+            });
+            obs.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.3 });
+      obs.observe(ctx.closest('.chart-container'));
+    }
+
+    // === UNEMPLOYMENT CHART ===
+    function initUnemploymentChart() {
+      const ctx = document.getElementById('unemploymentChart');
+      if (!ctx) return;
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            new Chart(ctx, {
+              type: 'line',
+              data: {
+                labels: ['2024', '2025', '2026', '2027', '2028', '2029', '2030', '2032', '2035'],
+                datasets: [
+                  {
+                    label: 'Arbeitslose (Mio.) — KI + Roboter Szenario',
+                    data: [2.7, 2.9, 3.4, 4.2, 5.5, 6.8, 7.5, 6.2, 4.8],
+                    borderColor: '#FF4444',
+                    backgroundColor: 'rgba(255, 68, 68, 0.1)',
+                    fill: true, tension: 0.4,
+                    pointBackgroundColor: '#FF4444', pointRadius: 5, borderWidth: 2.5,
+                  },
+                  {
+                    label: 'Arbeitslose (Mio.) — nur KI-Software',
+                    data: [2.7, 2.8, 3.1, 3.6, 4.2, 4.6, 4.8, 4.2, 3.5],
+                    borderColor: '#FF6B35',
+                    backgroundColor: 'rgba(255, 107, 53, 0.05)',
+                    fill: true, tension: 0.4,
+                    pointBackgroundColor: '#FF6B35', pointRadius: 4, borderWidth: 2,
+                    borderDash: [5, 5],
+                  },
+                  {
+                    label: 'Neue Jobs (Mio.)',
+                    data: [0.5, 0.8, 1.2, 1.8, 2.5, 3.5, 4.5, 5.8, 7.0],
+                    borderColor: '#4CAF50',
+                    backgroundColor: 'rgba(76, 175, 80, 0.05)',
+                    fill: true, tension: 0.4,
+                    pointBackgroundColor: '#4CAF50', pointRadius: 4, borderWidth: 2,
+                  }
+                ]
+              },
+              options: {
+                responsive: true,
+                animation: { duration: 2000, easing: 'easeOutQuart' },
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                  legend: { labels: { color: '#A89080', font: { family: 'Plus Jakarta Sans', size: 11 }, boxWidth: 12 } },
+                  tooltip: {
+                    backgroundColor: 'rgba(13, 9, 6, 0.9)',
+                    titleFont: { family: 'Plus Jakarta Sans' },
+                    bodyFont: { family: 'Plus Jakarta Sans' },
+                    borderColor: 'rgba(212, 149, 106, 0.2)',
+                    borderWidth: 1,
+                    padding: 12,
+                  }
+                },
+                scales: {
+                  x: { grid: { color: 'rgba(212,149,106,0.06)' }, ticks: { color: '#A89080', font: { family: 'Plus Jakarta Sans', size: 11 } } },
+                  y: { grid: { color: 'rgba(212,149,106,0.06)' }, ticks: { color: '#A89080', font: { family: 'Plus Jakarta Sans', size: 11 }, callback: v => v + ' Mio.' } }
+                }
+              }
+            });
+            obs.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.3 });
+      obs.observe(ctx.closest('.chart-container'));
+    }
+
+    // === SMOOTH ANCHOR SCROLL ===
+    function initSmoothAnchors() {
+      document.querySelectorAll('a[href^="#"]').forEach(a => {
+        a.addEventListener('click', (e) => {
+          e.preventDefault();
+          const target = document.querySelector(a.getAttribute('href'));
+          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
+    }
+
+    // === INIT ALL ===
+    document.addEventListener('DOMContentLoaded', () => {
+      initThreeHero();
+      initCursorGlow();
+      initTextReveal();
+      initReveal();
+      initScrollProgress();
+      initNav();
+      initHamburger();
+      initThemeToggle();
+      initCounters();
+      initJobBars();
+      initTimeline();
+      initTilt();
+      initMagneticButtons();
+      initThreatBars();
+      initBackToTop();
+      initChart();
+      initMedChart();
+      initUnemploymentChart();
+      initSmoothAnchors();
+    });
+
+    // === SHARE FUNCTIONS ===
+    function toggleShare() {
+      document.getElementById('shareMenu').classList.toggle('open');
+    }
+    function shareWhatsApp() {
+      const text = 'AI nimmt dir den Job weg. Nicht irgendwann — jetzt. Lies das: ';
+      window.open('https://wa.me/?text=' + encodeURIComponent(text + window.location.href), '_blank');
+    }
+    function shareTwitter() {
+      const text = 'AI verändert gerade alles. Schneller als du denkst. ';
+      window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(window.location.href), '_blank');
+    }
+    function copyLink() {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        const btn = document.getElementById('copyLinkBtn');
+        btn.style.background = 'var(--color-success)';
+        btn.style.color = '#fff';
+        btn.style.borderColor = 'var(--color-success)';
+        setTimeout(() => { btn.style = ''; }, 2000);
+      });
+    }
+    // Close share menu on outside click
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.share-fab')) {
+        document.getElementById('shareMenu')?.classList.remove('open');
+      }
+    });
+  </script>
+
+</body>
+</html>
